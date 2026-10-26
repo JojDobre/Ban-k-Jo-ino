@@ -10,12 +10,12 @@ Hra je po slovensky: texty v UI, komentáre a docstringy píš **po slovensky**;
 
 ## Aktuálny stav
 
-- **Fáza 1 (pohyb)** – hotová kostra: `Player` s coyote time, jump bufferom, premenlivou výškou skoku; multitouch ovládanie; kamera.
-- **Fáza 2 (prvý level)** – prototyp `level_01` zo sivých blokov (`Block`), mince, hviezdy, truhlica, checkpoint, cieľ, nepriateľ.
+- **Fáza 1 (pohyb)** – hotové: `Player` s coyote time, jump bufferom, premenlivou výškou skoku, animáciami (baník), squash/stretch, prachom, kamerou s pohľadom dopredu; multitouch ovládanie.
+- **Fáza 2 (prvý level)** – `level_01` hotový s grafikou: `TileMapLayer` (Kenney tráva + oblačné plošiny), parallax pozadie, mince, 3 hviezdy, zlatý poklad, checkpoint, pružina, sliz a slimák, cieľové dvere, zvuky, HUD s ikonami.
 - **Fáza 3 (ekonomika, progres, ukladanie)** – autoloady hotové a pokryté testami; chýba mapa sveta a hlavné menu (boot ide priamo do `level_01`).
 - **Fáza 4 (dedina)** – iba dáta (`data/buildings/*.tres`) a výpočet `MineProduction`; scéna dediny neexistuje.
 
-Ďalší krok: otestovať ovládanie na skutočnom telefóne, potom `TileMapLayer` tileset a levely 2–3.
+Ďalší krok: otestovať level na skutočnom telefóne, potom hlavné menu a mapa sveta, dedina, levely 2–3.
 
 ## Príkazy
 
@@ -29,22 +29,44 @@ godot --headless --path . -s res://tests/run_tests.gd
 # Simulované hranie prvého levelu bez grafiky (overí, že scény sa načítajú a fyzika beží)
 godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn
 
+# Dosiahnuteľnosť tajných miest level_01 (pružina, hviezdy, tajná jama) – výstup „VÝSLEDOK: OK“
+godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn
+
+# Screenshoty (potrebuje grafiku; v kontajneri cez xvfb). Argumenty: priečinok, body x,y, voliteľne „win“.
+xvfb-run -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+  res://tests/screenshots.tscn -- /cesta/k/priecinku 200,540 3700,150 win
+
 # Spustenie hry
 godot --path .
 ```
 
 Varovania „Odmietnutá záporná odmena“ a „Poškodené uloženie“ počas testov sú očakávané – testujú chybové vstupy.
-Po každej zmene logiky spusti testy; po zmene scén aj smoke test. GitHub Actions spúšťa oboje pri každom pushi.
+Hlásenia „ObjectDB instances leaked“ / „resources still in use at exit“ pri headless scénach sú tiež očakávané (tichý zvukový ovládač neuvoľní prehrávania).
+Po každej zmene logiky spusti testy; po zmene scén smoke test a level_checks. Pri vizuálnych zmenách sprav screenshoty a pozri si ich. GitHub Actions spúšťa testy, smoke test aj level_checks pri každom pushi.
+
+### Generátory (tools/)
+
+Grafika a niektoré resources sa generujú skriptmi – výsledky sú v repozitári:
+
+| Skript | Vytvára | Kedy spustiť |
+|---|---|---|
+| `tools/prepare_assets.py <kenney> <speech-therapy-game-v2>` | `assets/` (orezaný baník, Kenney dlaždice, parallax vrstvy, zvuky) | pri zmene zdrojových obrázkov |
+| `godot --headless --path . -s res://tools/build_resources.gd` | `assets/tilesets/terrain.tres`, `*_frames.tres` | po zmene obrázkov postáv/terénu |
+| `godot --headless --path . -s res://tools/build_level_01.gd` | `scenes/levels/level_01.tscn` z textovej mapy | po zmene mapy v skripte |
+
+**Level sa upravuje v textovej mape v `tools/build_level_01.gd`** (legenda je v hlavičke) a potom sa vygeneruje. Ak ho niekto upraví ručne v editore, generátor už nespúšťaj, inak zmeny prepíše. Po zmene mapy spusti `level_checks` a uprav ho, ak sa presunuli hviezdy/pružina.
 
 ## Architektúra
 
 ```
-autoload/      GameState, SaveManager, EconomyManager, ProgressionManager (poradie v project.godot je dôležité)
+autoload/      GameState, SaveManager, EconomyManager, ProgressionManager, Audio (poradie v project.godot je dôležité)
 scripts/data/  PlayerProgress, LevelRun, MineProduction, LevelDefinition, BuildingDefinition
 scripts/       player/, enemies/, items/, levels/, ui/
 scenes/        zrkadlí scripts/
 data/          .tres definície levelov a budov (balans sa ladí tu, nie v kóde)
-tests/         headless testy
+tests/         headless testy, smoke test, level_checks, screenshoty
+tools/         generátory assetov a levelu
+assets/        grafika a zvuky (pôvod v CREDITS.md)
 ```
 
 Pravidlá, ktoré treba dodržať:
@@ -67,10 +89,13 @@ Pravidlá, ktoré treba dodržať:
 
 | Vrstva | Bit (hodnota) | Kto |
 |---|---|---|
-| world | 1 (1) | `Block`, budúci `TileMapLayer` |
+| world | 1 (1) | `TileMapLayer` terénu, neviditeľné steny levelu |
 | player | 2 (2) | `Player` |
-| enemies | 3 (4) | `BasicEnemy` |
-| pickups | 4 (8) | mince, hviezdy, truhlice, checkpoint, cieľ |
+| enemies | 3 (4) | `BasicEnemy` (scény `slime.tscn`, `snail.tscn`) |
+| pickups | 4 (8) | mince, hviezdy, poklad, checkpoint, pružina, cieľ |
+
+Mriežka levelu je **64 px**; bežná výška zeme je riadok 9 (y = 576). Oblačné plošiny (`=`) sú one-way.
+Fyzika hráča (plný skok ≈ 3 dlaždice, krátky ≈ 2,4, dĺžka skoku ≈ 4 dlaždice) určuje, aké medzery a výšky sú v leveli prekonateľné.
 
 Hráč a nepriatelia sa fyzicky nezrážajú; kontakt rieši `Hitbox` (Area2D) nepriateľa.
 
@@ -79,7 +104,8 @@ Hráč a nepriatelia sa fyzicky nezrážajú; kontakt rieši `Hitbox` (Area2D) n
 - Statické typovanie všade (`var x: int`, `-> void`, `:=`). Projekt hlási netypované deklarácie ako varovania.
 - Taby na odsadenie, `snake_case` pre funkcie a premenné, `PascalCase` pre `class_name`.
 - Ladiace parametre (rýchlosť, skok, ceny) sú `@export` alebo v `.tres`, nie natvrdo v logike.
-- Kým nie je grafika, objekty sa kreslia v `_draw()` – pri pridaní spritov tieto funkcie odstráň.
+- Zvuky sa púšťajú iba cez `Audio.play(&"názov")`; nový zvuk pridaj do `Audio.SOUNDS`.
+- Area2D hlási prekrytie s oneskorením jednej snímky – pri kontrole „dopadol zhora“ používaj `Player.get_previous_feet_y()`.
 - Godot 4.4 generuje súbory `*.uid` – **commituj ich** spolu so skriptmi.
 - Nepoužívaj `TileMap` (zastaraný), ale `TileMapLayer`.
 - V skriptoch spúšťaných cez `-s` (napr. `tests/run_tests.gd`) nie sú autoloady dostupné ako identifikátory – použi `root.get_node("Názov")`.
@@ -89,5 +115,6 @@ Hráč a nepriatelia sa fyzicky nezrážajú; kontakt rieši `Hitbox` (Area2D) n
 - Android ukončuje aplikácie na pozadí bez varovania → ukladanie pri `NOTIFICATION_APPLICATION_PAUSED` už rieši `SaveManager`; nerozbiť.
 - Dotykové ovládanie musí ostať multitouch (`TouchControls` sleduje každý prst zvlášť). Bežné `Button` uzly pre pohyb nepoužívaj.
 - `ProgressionManager.LEVELS` je explicitný zoznam `preload` – nový level treba pridať sem (DirAccess nad `res://` sa v exporte správa inak).
-- Neodkazuj na postavy, grafiku ani levely zo série Super Mario (GDD kap. 10.1).
+- Neodkazuj na postavy, grafiku ani levely zo série Super Mario (GDD kap. 10.1). V repozitári Speech-Therapy-Game-v2 sú súbory ako `platform_*.webp`, `special_block`, `enemies.png`, ktoré vyzerajú ako grafika z Maria – **nepoužívať**.
+- Nové assety zapíš do `CREDITS.md` aj s licenciou.
 - Hra je bez reklám, nákupov, sieťových volaní a zberu dát (Google Play Families Policy). Nepridávaj SDK, ktoré by to porušili.

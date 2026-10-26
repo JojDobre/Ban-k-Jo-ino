@@ -46,4 +46,14 @@ func _physics_process(_delta: float) -> void:
 		_log.append("KONIEC snímka %d: x=%.0f, mince=%d, srdcia=%d, hviezdy=%s, ukončené=%s" % [_frame, p.global_position.x, run.coins, run.hearts, run.stars, _level._finished])
 		_log.append("progres: mince=%d zlato=%d" % [GameState.progress.coins, GameState.progress.gold])
 		print("\n".join(_log))
-		get_tree().quit()
+		_quit()
+
+
+func _quit() -> void:
+	set_physics_process(false)
+	for action: StringName in [&"move_left", &"move_right", &"jump"]:
+		Input.action_release(action)
+	_level.queue_free()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	get_tree().quit()

@@ -1,0 +1,27 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemies/slime_normal_flat.png" id="1_lsyvr"]
+[ext_resource type="Texture2D" path="res://assets/enemies/slime_normal_walk_a.png" id="2_gribt"]
+[ext_resource type="Texture2D" path="res://assets/enemies/slime_normal_walk_b.png" id="3_101fx"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lsyvr")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_gribt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_101fx")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 6.0
+}]

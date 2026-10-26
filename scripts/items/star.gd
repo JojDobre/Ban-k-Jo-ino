@@ -6,6 +6,9 @@ extends Area2D
 @export var star_id: String = "a"
 
 var _already_found := false
+var _time := 0.0
+
+@onready var _sprite: Sprite2D = $Sprite
 
 
 func _ready() -> void:
@@ -14,26 +17,24 @@ func _ready() -> void:
 	if run != null:
 		_already_found = GameState.progress.get_stars(run.level_id).has(star_id)
 	if _already_found:
-		modulate.a = 0.4
+		modulate.a = 0.45
+
+
+func _process(delta: float) -> void:
+	_time += delta
+	_sprite.position.y = sin(_time * 3.0) * 6.0
+	_sprite.rotation = sin(_time * 2.0) * 0.15
 
 
 func _on_body_entered(body: Node2D) -> void:
 	if not body is Player or GameState.current_run == null:
 		return
 	GameState.current_run.add_star(star_id)
+	Audio.play(&"star")
 	set_deferred("monitoring", false)
+	set_process(false)
 	var tween := create_tween()
-	tween.tween_property(self, "scale", Vector2(1.8, 1.8), 0.2)
-	tween.parallel().tween_property(self, "modulate:a", 0.0, 0.2)
+	tween.tween_property(self, "scale", Vector2(2.0, 2.0), 0.3).set_trans(Tween.TRANS_BACK)
+	tween.parallel().tween_property(self, "rotation", TAU, 0.3)
+	tween.parallel().tween_property(self, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(queue_free)
-
-
-func _draw() -> void:
-	var points := PackedVector2Array()
-	for i in 10:
-		var radius := 18.0 if i % 2 == 0 else 8.0
-		var angle := -PI / 2 + i * PI / 5
-		points.append(Vector2(cos(angle), sin(angle)) * radius)
-	draw_colored_polygon(points, Color("ffe14d"))
-	points.append(points[0])
-	draw_polyline(points, Color("c98a00"), 2.0)

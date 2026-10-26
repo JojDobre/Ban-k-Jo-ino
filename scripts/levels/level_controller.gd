@@ -8,6 +8,10 @@ extends Node2D
 @export var fall_limit_y: float = 900.0
 ## Pravý okraj levelu pre kameru.
 @export var level_width: float = 4060.0
+## Spodný okraj, ktorý ešte ukáže kamera.
+@export var camera_limit_bottom: float = 900.0
+
+const RESULTS_DELAY := 1.2
 
 var run: LevelRun
 var _finished := false
@@ -31,7 +35,7 @@ func _ready() -> void:
 	player.magnet_radius = GameState.get_magnet_radius()
 	player.damaged.connect(_on_player_damaged)
 	var camera := player.get_node("Camera2D") as Camera2D
-	camera.limit_bottom = int(fall_limit_y)
+	camera.limit_bottom = int(camera_limit_bottom)
 	camera.limit_right = int(level_width)
 	for goal in get_tree().get_nodes_in_group("goal"):
 		(goal as Goal).reached.connect(_on_goal_reached)
@@ -52,6 +56,7 @@ func _on_player_damaged() -> void:
 
 func _on_player_fell() -> void:
 	run.lose_heart()
+	Audio.play(&"hurt")
 	if run.is_dead():
 		_finish(false)
 	else:
@@ -65,8 +70,15 @@ func _on_goal_reached() -> void:
 
 func _finish(success: bool) -> void:
 	_finished = true
-	player.input_enabled = false
+	if success:
+		player.celebrate()
+		Audio.play(&"win")
+	else:
+		player.play_death()
+		Audio.play(&"fail")
 	var result := ProgressionManager.finish_run(run, success, level_definition)
+	# Chvíľa na dohranie animácie pred obrazovkou výsledkov.
+	await get_tree().create_timer(RESULTS_DELAY).timeout
 	hud.show_results(result)
 
 

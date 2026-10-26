@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/items/goal.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/items/door_open.png" id="2_door"]
+[ext_resource type="Texture2D" path="res://assets/items/door_open_top.png" id="3_top"]
+[ext_resource type="Texture2D" path="res://assets/props/sign_exit.png" id="4_sign"]
 
 [sub_resource type="RectangleShape2D" id="Shape_item"]
-size = Vector2(60, 140)
+size = Vector2(40, 110)
 
 [node name="Goal" type="Area2D" groups=["goal"]]
 collision_layer = 8
@@ -12,5 +15,17 @@ monitorable = false
 script = ExtResource("1_item")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -70)
+position = Vector2(0, -55)
 shape = SubResource("Shape_item")
+
+[node name="DoorTop" type="Sprite2D" parent="."]
+position = Vector2(0, -96)
+texture = ExtResource("3_top")
+
+[node name="Door" type="Sprite2D" parent="."]
+position = Vector2(0, -32)
+texture = ExtResource("2_door")
+
+[node name="Sign" type="Sprite2D" parent="."]
+position = Vector2(-80, -32)
+texture = ExtResource("4_sign")

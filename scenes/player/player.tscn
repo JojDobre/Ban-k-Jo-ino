@@ -1,28 +1,75 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="SpriteFrames" path="res://assets/player/jozino_frames.tres" id="2_frames"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(32, 52)
+size = Vector2(36, 72)
+
+[sub_resource type="Gradient" id="Gradient_puff"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_puff"]
+gradient = SubResource("Gradient_puff")
+width = 24
+height = 24
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+colors = PackedColorArray(0.96, 0.9, 0.78, 0.9, 0.96, 0.9, 0.78, 0)
+
+[sub_resource type="Curve" id="Curve_grow"]
+_data = [Vector2(0, 0.6), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 1
-floor_snap_length = 6.0
+floor_snap_length = 8.0
 script = ExtResource("1_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_body")
+
+[node name="Visual" type="Node2D" parent="."]
+position = Vector2(0, 36)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Visual"]
+position = Vector2(-8.5, -51)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(0, 34)
+emitting = false
+amount = 10
+lifetime = 0.45
+one_shot = true
+explosiveness = 0.9
+texture = SubResource("GradientTexture2D_puff")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 2)
+direction = Vector2(0, -1)
+spread = 80.0
+gravity = Vector2(0, 250)
+initial_velocity_min = 40.0
+initial_velocity_max = 130.0
+scale_amount_min = 0.6
+scale_amount_max = 1.2
+scale_amount_curve = SubResource("Curve_grow")
+color_ramp = SubResource("Gradient_fade")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 limit_left = 0
 limit_bottom = 900
 position_smoothing_enabled = true
-position_smoothing_speed = 8.0
+position_smoothing_speed = 7.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
-drag_left_margin = 0.1
-drag_right_margin = 0.1
-drag_top_margin = 0.3
+drag_left_margin = 0.05
+drag_right_margin = 0.05
+drag_top_margin = 0.35
 drag_bottom_margin = 0.1

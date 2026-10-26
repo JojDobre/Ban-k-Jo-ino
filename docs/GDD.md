@@ -566,7 +566,7 @@ Hra nekopíruje konkrétne postavy, grafiku, levely ani chránené prvky série 
 - Základné UI ikony.
 - Efekty zbierania mincí a porazenia nepriateľa.
 
-**Prototyp** používa jednoduché tvary kreslené kódom alebo voľne dostupné assety (napr. Kenney.nl, licencia CC0). Finálna grafika sa doplní až po overení, že hra je zábavná.
+**Aktuálne použité:** Jožino je kreslený baník (zelená varianta z projektu Speech-Therapy-Game-v2), prostredie, predmety a nepriatelia sú z balíka Kenney *New Platformer Pack* (CC0) – štýlovo ladia (hrubé obrysy, sýte farby). Úplný zoznam je v `CREDITS.md`. „Truhlicu“ v leveli zatiaľ predstavuje zlatý drahokam.
 
 ---
 

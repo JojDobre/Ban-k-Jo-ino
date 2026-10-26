@@ -5,11 +5,18 @@ extends CanvasLayer
 
 signal restart_requested
 
+const HEART_FULL := preload("res://assets/ui/hud_heart.png")
+const HEART_EMPTY := preload("res://assets/ui/hud_heart_empty.png")
+const STAR := preload("res://assets/items/star.png")
+const ICON_SIZE := Vector2(56, 56)
+
 var _run: LevelRun
+var _level_name := ""
+var _shown_coins := -1
 
 @onready var _coins_label: Label = %CoinsLabel
-@onready var _hearts_label: Label = %HeartsLabel
-@onready var _stars_label: Label = %StarsLabel
+@onready var _hearts: HBoxContainer = %Hearts
+@onready var _stars: HBoxContainer = %Stars
 @onready var _overlay: Control = %Overlay
 @onready var _title_label: Label = %TitleLabel
 @onready var _info_label: Label = %InfoLabel
@@ -33,7 +40,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func bind(run: LevelRun, level: LevelDefinition) -> void:
 	_run = run
 	run.changed.connect(_refresh)
-	%LevelLabel.text = level.display_name
+	_level_name = level.display_name
+	_build_icons(_hearts, run.max_hearts, HEART_FULL)
+	_build_icons(_stars, ProgressionManager.STARS_PER_LEVEL, STAR)
 	_refresh()
 
 
@@ -58,13 +67,50 @@ func _toggle_pause() -> void:
 	var paused := not get_tree().paused
 	get_tree().paused = paused
 	_touch_controls.release_all()
-	_title_label.text = "Pauza"
+	_title_label.text = "Pauza – %s" % _level_name
 	_info_label.text = ""
 	_continue_button.show()
 	_overlay.visible = paused
 
 
 func _refresh() -> void:
-	_coins_label.text = "Mince: %d" % _run.coins
-	_hearts_label.text = "Srdcia: %d / %d" % [_run.hearts, _run.max_hearts]
-	_stars_label.text = "Hviezdy: %d / %d" % [_run.stars.size(), ProgressionManager.STARS_PER_LEVEL]
+	if _run.coins != _shown_coins:
+		if _shown_coins >= 0:
+			_pop(_coins_label)
+		_shown_coins = _run.coins
+	_coins_label.text = str(_run.coins)
+	for i in _hearts.get_child_count():
+		var heart := _hearts.get_child(i) as TextureRect
+		var texture := HEART_FULL if i < _run.hearts else HEART_EMPTY
+		if heart.texture != texture:
+			heart.texture = texture
+			_pop(heart)
+	for i in _stars.get_child_count():
+		var star := _stars.get_child(i) as TextureRect
+		var found := i < _run.stars.size()
+		var target := Color.WHITE if found else Color(0, 0, 0, 0.35)
+		if star.modulate != target:
+			star.modulate = target
+			if found:
+				_pop(star)
+
+
+func _build_icons(container: HBoxContainer, count: int, texture: Texture2D) -> void:
+	for child in container.get_children():
+		child.queue_free()
+	for i in count:
+		var icon := TextureRect.new()
+		icon.texture = texture
+		icon.custom_minimum_size = ICON_SIZE
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		container.add_child(icon)
+
+
+## Krátke „poskočenie“ ikony pri zmene.
+func _pop(control: Control) -> void:
+	control.pivot_offset = control.size * 0.5
+	var tween := control.create_tween()
+	tween.tween_property(control, "scale", Vector2(1.35, 1.35), 0.08)
+	tween.tween_property(control, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_BACK)

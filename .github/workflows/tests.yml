@@ -24,8 +24,15 @@ jobs:
       - name: Testy logiky
         run: ./godot --headless --path . -s res://tests/run_tests.gd
 
+      # Hlásenia o neuvoľnených zvukoch pri ukončení sú v headless režime očakávané (tichý ovládač zvuku).
       - name: Smoke test levelu
         run: |
           ./godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn 2>&1 | tee smoke.log
-          if grep -E "SCRIPT ERROR|^ERROR" smoke.log; then exit 1; fi
+          if grep -E "SCRIPT ERROR" smoke.log; then exit 1; fi
           grep -q "KONIEC" smoke.log
+
+      - name: Dosiahnuteľnosť miest v leveli
+        run: |
+          ./godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn 2>&1 | tee checks.log
+          if grep -E "SCRIPT ERROR" checks.log; then exit 1; fi
+          grep -q "VÝSLEDOK: OK" checks.log

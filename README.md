@@ -8,12 +8,12 @@ Farebná 2D plošinovka pre Android s budovaním dediny. Jožino skáče cez lev
 
 ## Stav
 
-Prvý technický míľnik – ovládateľná postava s dotykovým ovládaním v prototypovom leveli. Grafika je zatiaľ kreslená kódom (jednoduché tvary).
+Prvý level „Prvý krok“ je hrateľný s grafikou, animáciami a zvukmi. Pôvod grafiky je v [CREDITS.md](CREDITS.md).
 
 | Fáza | Stav |
 |---|---|
-| 1. Pohyb a fyzika | ✅ kostra, čaká na test na telefóne |
-| 2. Prvý level | 🟡 prototyp zo sivých blokov |
+| 1. Pohyb a fyzika | ✅ hotové, čaká na test na telefóne |
+| 2. Prvý level | ✅ grafika, animácie, zvuky, 3 hviezdy, poklad, pružina |
 | 3. Ekonomika, progres, ukladanie | 🟡 logika + testy, chýba mapa a menu |
 | 4. Dedina | ⬜ iba dáta a výpočet bane |
 | 5. Dokončenie MVP | ⬜ |
@@ -64,6 +64,7 @@ Na telefóne sa zobrazia dotykové tlačidlá.
 godot --headless --path . --import
 godot --headless --path . -s res://tests/run_tests.gd
 godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn
+godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn
 ```
 
 ### Android
