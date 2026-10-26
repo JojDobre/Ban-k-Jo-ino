@@ -232,6 +232,14 @@ func celebrate() -> void:
 	_squash(Vector2(0.85, 1.15))
 
 
+## Oblek z obchodu (priečinok v assets/player/).
+func set_outfit(outfit_id: String) -> void:
+	var frames := load("res://assets/player/%s/frames.tres" % outfit_id) as SpriteFrames
+	if frames != null:
+		_sprite.sprite_frames = frames
+		_sprite.play(&"idle")
+
+
 func get_max_speed() -> float:
 	return max_speed * (SPEED_BOOST if has_powerup(POWERUP_SPEED) else 1.0)
 

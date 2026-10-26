@@ -83,10 +83,13 @@ func _read_json(path: String) -> Dictionary:
 ## PlayerProgress.SAVE_VERSION a pridaj sem krok pre predchádzajúcu verziu.
 func _migrate(data: Dictionary) -> Dictionary:
 	var version := int(data.get("save_version", 1))
-	# Príklad budúceho kroku:
-	# if version == 1:
-	# 	data["new_field"] = default
-	# 	version = 2
+	if version == 1:
+		# Verzia 2 pridala obleky, predmety z obchodu a posledný level – štart s predvolenými hodnotami.
+		data["owned_outfits"] = [PlayerProgress.DEFAULT_OUTFIT]
+		data["outfit"] = PlayerProgress.DEFAULT_OUTFIT
+		data["items"] = {}
+		data["last_level"] = ""
+		version = 2
 	data["save_version"] = version
 	return data
 

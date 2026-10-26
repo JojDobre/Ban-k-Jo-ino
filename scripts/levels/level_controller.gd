@@ -43,7 +43,18 @@ func _ready() -> void:
 		(goal as Goal).reached.connect(_on_goal_reached)
 	hud.bind(run, level_definition, player, get_tree().get_nodes_in_group(&"secret_area").size())
 	hud.restart_requested.connect(_restart)
+	hud.map_requested.connect(GameState.change_scene.bind(GameState.SCENE_WORLD_MAP))
+	player.set_outfit(GameState.progress.outfit)
+	_use_shop_items()
 	Music.play(&"level")
+
+
+## Predmety z obchodu sa použijú automaticky na začiatku levelu (jeden kus z každého).
+func _use_shop_items() -> void:
+	if ShopManager.use_item("start_shield"):
+		player.add_powerup(Player.POWERUP_SHIELD, INF)
+	if ShopManager.use_item("start_magnet"):
+		player.add_powerup(Player.POWERUP_MAGNET, 20.0)
 
 
 func _physics_process(_delta: float) -> void:

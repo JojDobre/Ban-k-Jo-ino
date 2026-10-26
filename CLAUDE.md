@@ -12,10 +12,17 @@ Hra je po slovensky: texty v UI, komentáre a docstringy píš **po slovensky**;
 
 - **Fáza 1 (pohyb)** – hotové: `Player` s coyote time, jump bufferom, premenlivou výškou skoku, animáciami (baník), squash/stretch, prachom, kamerou s pohľadom dopredu; multitouch ovládanie.
 - **Fáza 2 (prvý level)** – `level_01` hotový (216 dlaždíc): 9 druhov nepriateľov a nebezpečenstiev, bloky buchnuteľné zospodu, skryté bloky, kľúč a zámky, vypínač s modrými blokmi, pohyblivé a padajúce plošiny, láva, 2 tajné miesta za falošnými stenami, vylepšenia (štít, rýchlosť, magnet), hudba, gradient oblohy so slnkom, vietor v tráve.
-- **Fáza 3 (ekonomika, progres, ukladanie)** – autoloady hotové a pokryté testami; chýba mapa sveta a hlavné menu (boot ide priamo do `level_01`).
-- **Fáza 4 (dedina)** – iba dáta (`data/buildings/*.tres`) a výpočet `MineProduction`; scéna dediny neexistuje.
+- **Fáza 3 (ekonomika, progres, ukladanie)** – hotové: hlavné menu, mapa sveta Zelené údolie s 3 levelmi (`level_01`–`level_03`), nastavenia, uloženie verzie 2 (obleky, predmety, posledný level).
+- **Fáza 4 (dedina)** – hotové: dedina s domom, baňou (vozík, offline produkcia), kováčskou dielňou, panelom vylepšení a obyvateľmi; obchod s 5 oblekmi a 2 predmetmi na štart levelu.
 
-Ďalší krok: otestovať level na skutočnom telefóne, potom hlavné menu a mapa sveta, dedina, levely 2–3.
+Ďalší krok: test celého toku na telefóne, ladenie ekonomiky, ďalší svet (Staré bane).
+
+### Tok obrazoviek
+
+Boot → hlavné menu → mapa sveta → level → výsledky → mapa. Z menu, mapy a dediny sa ide do dediny a obchodu.
+Prechody iba cez `GameState.change_scene(cesta)` (stmavnutie, zapamätá `previous_scene`), návrat cez `GameState.go_back()`.
+Cesty obrazoviek sú konštanty `GameState.SCENE_*`. Level sa spúšťa cez `ProgressionManager.start_level(id)`.
+Androidové tlačidlo Späť rieši každá obrazovka v `_notification(NOTIFICATION_WM_GO_BACK_REQUEST)` (`quit_on_go_back` je vypnuté).
 
 ## Príkazy
 
@@ -29,12 +36,19 @@ godot --headless --path . -s res://tests/run_tests.gd
 # Simulované hranie prvého levelu bez grafiky (overí, že scény sa načítajú a fyzika beží)
 godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn
 
-# Dosiahnuteľnosť tajných miest level_01 (pružina, hviezdy, tajná jama) – výstup „VÝSLEDOK: OK“
+# Dosiahnuteľnosť kľúčových miest všetkých levelov (alebo jedného: -- level_02) – výstup „VÝSLEDOK: OK“
 godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn
+
+# Otvorí každú obrazovku (menu, mapa, dedina, obchod, nastavenia, levely) – výstup „OBRAZOVKY: OK“
+godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn
+
+# Screenshot ľubovoľnej obrazovky s ukážkovým postupom
+xvfb-run -a -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 1280x720 \
+  res://tests/scene_shot.tscn -- /cesta/obrazok.png res://scenes/village/village.tscn 1.5
 
 # Screenshoty (potrebuje grafiku; v kontajneri cez xvfb). Argumenty: priečinok, body x,y, voliteľne „win“.
 xvfb-run -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 1280x720 \
-  res://tests/screenshots.tscn -- /cesta/k/priecinku 200,540 3700,150 win
+  res://tests/screenshots.tscn -- /cesta/k/priecinku level_02 200,540 3700,150 win
 
 # Spustenie hry
 godot --path .
@@ -51,17 +65,17 @@ Grafika a niektoré resources sa generujú skriptmi – výsledky sú v repozit�
 | Skript | Vytvára | Kedy spustiť |
 |---|---|---|
 | `tools/prepare_assets.py <kenney> <speech-therapy-game-v2> <kenney_extra>` | `assets/` (orezaný baník, Kenney dlaždice, parallax vrstvy, zvuky) | pri zmene zdrojových obrázkov |
-| `godot --headless --path . -s res://tools/build_resources.gd` | `assets/tilesets/terrain.tres`, `*_frames.tres` | po zmene obrázkov postáv/terénu |
-| `godot --headless --path . -s res://tools/build_level_01.gd` | `scenes/levels/level_01.tscn` z textovej mapy | po zmene mapy v skripte |
+| `godot --headless --path . -s res://tools/build_resources.gd` | `assets/tilesets/terrain.tres`, `assets/player/<oblek>/frames.tres`, `assets/enemies/*_frames.tres` | po zmene obrázkov postáv/terénu |
+| `godot --headless --path . -s res://tools/build_levels.gd [-- level_02]` | `scenes/levels/level_0X.tscn` z máp v `data/levels/maps/` | po zmene mapy |
 
-**Level sa upravuje v textovej mape v `tools/build_level_01.gd`** (legenda všetkých znakov je v hlavičke; druhá mapa `SECRET` určuje falošné steny) a potom sa vygeneruje. Generátor sám dopĺňa náhodné dekorácie na voľnú zem (pevné semienko, výsledok je stále rovnaký). Ak ho niekto upraví ručne v editore, generátor už nespúšťaj, inak zmeny prepíše. Po zmene mapy spusti `level_checks` a uprav ho, ak sa presunuli hviezdy/pružina.
+**Levely sa upravujú v textových mapách `data/levels/maps/level_0X.txt`** (legenda všetkých znakov je v hlavičke `tools/build_levels.gd`; sekcia `[secret]` určuje falošné steny) a potom sa vygenerujú. Nový level: mapa + `data/levels/level_0X.tres` (aj `map_position` na mape sveta) + záznam v `ProgressionManager.LEVELS` a `LEVEL_IDS` generátora. Generátor sám dopĺňa náhodné dekorácie na voľnú zem (pevné semienko, výsledok je stále rovnaký). Ak ho niekto upraví ručne v editore, generátor už nespúšťaj, inak zmeny prepíše. Po zmene mapy spusti `level_checks` a uprav ho, ak sa presunuli hviezdy/pružina.
 
 ## Architektúra
 
 ```
-autoload/      GameState, SaveManager, EconomyManager, ProgressionManager, Audio, Music (poradie v project.godot je dôležité)
+autoload/      GameState, SaveManager, EconomyManager, ProgressionManager, Audio, Music, VillageManager, ShopManager (poradie v project.godot je dôležité)
 scripts/data/  PlayerProgress, LevelRun, MineProduction, LevelDefinition, BuildingDefinition
-scripts/       player/, enemies/, items/, blocks/, hazards/, platforms/, effects/, levels/, ui/
+scripts/       player/, enemies/, items/, blocks/, hazards/, platforms/, effects/, levels/, ui/, menus/, world_map/, village/
 scenes/        zrkadlí scripts/
 data/          .tres definície levelov a budov (balans sa ladí tu, nie v kóde)
 tests/         headless testy, smoke test, level_checks, screenshoty
@@ -82,6 +96,8 @@ Pravidlá, ktoré treba dodržať:
 9. **Bloky reagujú na náraz hlavou** cez metódu `bump(player)` – volá ju `Player._bump_ceiling()` pre každý kolíziou zasiahnutý objekt nad hlavou. Nové interaktívne bloky stačí vybaviť touto metódou.
 10. **Efekty** (`Effects.burst/poof/sparkle/floating_text/debris`) sa pridávajú do uzla v skupine `level`, nie pod rušený objekt.
 11. **Vylepšenia** sú v `Player` (`add_powerup`, `has_powerup`); HUD ich iba zobrazuje cez signál `powerups_changed` a `get_powerups()`. Kľúče a tajné miesta počíta `LevelRun`.
+12. **Dedina a obchod:** budovy, ich ceny a baňu rieši `VillageManager` (dom musí byť opravený, kým sa dá stavať ďalej; pred vylepšením bane sa vyplatí produkcia). Obleky a predmety `ShopManager`; predmety sa spotrebujú automaticky na začiatku levelu (`LevelController._use_shop_items`). Obrazovky iba volajú tieto funkcie.
+13. **UI téma** je v `assets/ui/theme.tres` (písmo Baloo 2, tlačidlá, panely). Varianty: `RoundButton` (okrúhle s ikonou), `DangerButton` (červené), `Card`, `TitleLabel`, `OutlinedLabel`. Nové UI farbi cez ne, nie cez vlastné štýly.
 
 ### Pravidlá odmien (GDD kap. 2.4, 4.2)
 
@@ -95,7 +111,7 @@ Pravidlá, ktoré treba dodržať:
 |---|---|---|
 | world | 1 (1) | `TileMapLayer` terénu, neviditeľné steny levelu |
 | player | 2 (2) | `Player` |
-| enemies | 3 (4) | `BasicEnemy` (scény `slime.tscn`, `snail.tscn`) |
+| enemies | 3 (4) | potomkovia `Enemy` (`scenes/enemies/*.tscn`) |
 | pickups | 4 (8) | mince, predmety, checkpoint, pružina, cieľ |
 
 Pevné bloky, plošiny (`AnimatableBody2D`) a drvič sú vo vrstve world. Ostne, píla, láva, vypínač a tajné miesta sú `Area2D` bez vlastnej vrstvy (maska player).

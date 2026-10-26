@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/menus/menu_background.gd" id="1_bg"]
+[ext_resource type="PackedScene" path="res://scenes/levels/environment.tscn" id="2_env"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/layer_clouds.png" id="3_clouds"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/layer_trees.png" id="4_trees"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/layer_hills.png" id="5_hills"]
+[ext_resource type="Texture2D" path="res://assets/ui/ground_top.png" id="6_top"]
+[ext_resource type="Texture2D" path="res://assets/ui/ground_fill.png" id="7_fill"]
+
+[node name="MenuBackground" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_bg")
+
+[node name="Environment" parent="." instance=ExtResource("2_env")]
+
+[node name="Parallax" type="Node2D" parent="."]
+
+[node name="Clouds" type="Parallax2D" parent="Parallax"]
+repeat_size = Vector2(2048, 0)
+autoscroll = Vector2(-14, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Parallax/Clouds"]
+scale = Vector2(2, 2)
+texture = ExtResource("3_clouds")
+centered = false
+
+[node name="Trees" type="Parallax2D" parent="Parallax"]
+repeat_size = Vector2(2048, 0)
+autoscroll = Vector2(-6, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Parallax/Trees"]
+scale = Vector2(2, 2)
+texture = ExtResource("4_trees")
+centered = false
+
+[node name="Hills" type="Parallax2D" parent="Parallax"]
+repeat_size = Vector2(2048, 0)
+
+[node name="Sprite" type="Sprite2D" parent="Parallax/Hills"]
+scale = Vector2(2, 2)
+texture = ExtResource("5_hills")
+centered = false
+
+[node name="GroundTop" type="TextureRect" parent="."]
+texture_repeat = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -128.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("6_top")
+stretch_mode = 1
+
+[node name="GroundFill" type="TextureRect" parent="."]
+texture_repeat = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("7_fill")
+stretch_mode = 1

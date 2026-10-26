@@ -1,11 +1,12 @@
 extends Node
 ## Uloží screenshoty levelu na zadaných miestach (vyžaduje grafiku, nie --headless):
 ## xvfb-run godot --path . res://tests/screenshots.tscn -- <výstupný_priečinok> [x1,y1 x2,y2 ... win]
-## „win“ ukončí level úspechom a odfotí obrazovku výsledkov.
+## „win“ ukončí level úspechom a odfotí obrazovku výsledkov. Argument „level_02“ zvolí iný level.
 
 var _level: LevelController
 var _spots: Array[Vector2] = [Vector2(200, 540)]
 var _out_dir := "user://screenshots"
+var _level_id := "level_01"
 
 
 func _ready() -> void:
@@ -15,6 +16,9 @@ func _ready() -> void:
 	if args.size() > 1:
 		_spots.clear()
 		for arg in args.slice(1):
+			if arg.begins_with("level_"):
+				_level_id = arg
+				continue
 			if arg == "win":
 				_spots.append(Vector2.INF)
 				continue
@@ -23,7 +27,7 @@ func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	SaveManager.autosave_enabled = false
 	GameState.set_progress(PlayerProgress.new())
-	_level = load("res://scenes/levels/level_01.tscn").instantiate()
+	_level = load("res://scenes/levels/%s.tscn" % _level_id).instantiate()
 	add_child(_level)
 	_level.get_node("Hud/TouchControls").visible = true
 	_capture.call_deferred()

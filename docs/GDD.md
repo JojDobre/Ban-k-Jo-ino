@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Verzia | 1.2 |
+| Verzia | 1.3 |
 | Stav | Schválený základný koncept, zapracované pripomienky z revízie |
 | Engine | Godot 4.4.x |
 | Jazyk | GDScript (statické typovanie) |
@@ -308,7 +308,18 @@ Ekonomika musí zabezpečiť, že:
 
 Ceny a produkcia sú **počiatočné testovacie parametre**, sú uložené v dátových súboroch (nie v kóde) a budú sa ladiť. Každé vylepšenie musí mať jasný účinok: vyššiu produkciu, novú schopnosť alebo viditeľnú zmenu.
 
-Obchod (pôvodne v cenníku) sa presúva za MVP.
+**Obchod** (od verzie 1.3) predáva iba kozmetiku a pomôcky za herné meny:
+
+| Položka | Cena | Účinok |
+|---|---|---|
+| Oblek Žltá prilba | 150 mincí | vzhľad |
+| Oblek Modré nohavice | 200 mincí + 1 zlato | vzhľad |
+| Oblek Červená košeľa | 250 mincí + 1 zlato | vzhľad |
+| Oblek Starý majster | 400 mincí + 3 zlata | vzhľad |
+| Štít na štart (max. 3) | 40 mincí | ďalší level začne so štítom |
+| Magnet na štart (max. 3) | 30 mincí | prvých 20 s levelu priťahuje mince |
+
+Predmety sa použijú automaticky na začiatku ďalšieho levelu.
 
 ---
 

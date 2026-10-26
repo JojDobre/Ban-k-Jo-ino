@@ -32,6 +32,16 @@ MINER_ANIMATIONS = {
     "die": ("die", range(0, 5)),
 }
 MINER_HEIGHT = 104  # výška snímky v pixeloch hry
+# Spoločný výrez zo zdrojových snímok (1028×872) – obrys všetkých animácií zeleného baníka.
+MINER_CROP = (83, 58, 855, 811)
+# id obleku -> (priečinok, predpona súborov) v keyframes/
+MINER_OUTFITS = {
+    "green": ("green_miner", "__green_miner_"),
+    "yellow": ("yellow_hat", "__yellow_hat_"),
+    "red_shirt": ("red_shirt_miner", "__red_shirt_miner_"),
+    "blue": ("red_head_miner", "__miner_"),
+    "old": ("old_miner", "__old_miner_"),
+}
 
 # Poradie dielov terénu v atlase (stĺpec v riadku 0). Názvy podľa Kenney.
 TERRAIN_TILES = [
@@ -78,27 +88,20 @@ EXTRA_SOUNDS = {
 
 
 def prepare_miner(source: Path) -> None:
-    frames_dir = source / "images/superjozino/assets/player/keyframes/green_miner"
-    loaded = {}
-    union = None
-    for anim, (name, frames) in MINER_ANIMATIONS.items():
-        images = [Image.open(frames_dir / f"__green_miner_{name}_{i:03d}.png").convert("RGBA") for i in frames]
-        loaded[anim] = images
-        for im in images:
-            box = im.getchannel("A").getbbox()
-            union = box if union is None else (min(union[0], box[0]), min(union[1], box[1]),
-                                               max(union[2], box[2]), max(union[3], box[3]))
-    scale = MINER_HEIGHT / (union[3] - union[1])
-    width = round((union[2] - union[0]) * scale)
-    out_dir = ASSETS / "player"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    for anim, images in loaded.items():
-        strip = Image.new("RGBA", (width * len(images), MINER_HEIGHT))
-        for i, im in enumerate(images):
-            frame = im.crop(union).resize((width, MINER_HEIGHT), Image.LANCZOS)
-            strip.alpha_composite(frame, (i * width, 0))
-        strip.save(out_dir / f"jozino_{anim}.png", optimize=True)
-    print(f"baník: snímka {width}x{MINER_HEIGHT}")
+    """Všetky obleky baníka orezané rovnakým výrezom – snímky majú rovnakú veľkosť aj polohu postavy."""
+    keyframes = source / "images/superjozino/assets/player/keyframes"
+    width = round((MINER_CROP[2] - MINER_CROP[0]) * MINER_HEIGHT / (MINER_CROP[3] - MINER_CROP[1]))
+    for outfit, (folder, prefix) in MINER_OUTFITS.items():
+        out_dir = ASSETS / "player" / outfit
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for anim, (name, frames) in MINER_ANIMATIONS.items():
+            strip = Image.new("RGBA", (width * len(frames), MINER_HEIGHT))
+            for i, frame_index in enumerate(frames):
+                im = Image.open(keyframes / folder / f"{prefix}{name}_{frame_index:03d}.png").convert("RGBA")
+                frame = im.crop(MINER_CROP).resize((width, MINER_HEIGHT), Image.LANCZOS)
+                strip.alpha_composite(frame, (i * width, 0))
+            strip.save(out_dir / f"jozino_{anim}.png", optimize=True)
+    print(f"baník: {len(MINER_OUTFITS)} oblekov, snímka {width}x{MINER_HEIGHT}")
 
 
 def prepare_kenney(kenney: Path) -> None:

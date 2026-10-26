@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="LevelDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/level_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "level_03"
+world_id = "green_valley"
+display_name = "Tajomstvo údolia"
+scene_path = "res://scenes/levels/level_03.tscn"
+order = 3
+completion_coins = 20
+first_clear_gold = 1
+unlock_requirements = Array[String](["level_02"])
+map_position = Vector2(0.7, 0.7)

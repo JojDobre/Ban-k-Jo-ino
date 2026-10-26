@@ -1,0 +1,117 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/menus/main_menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://scenes/menus/menu_background.tscn" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/currency_bar.tscn" id="3_bar"]
+[ext_resource type="Texture2D" path="res://assets/icons/gear.png" id="4_gear"]
+[ext_resource type="SpriteFrames" path="res://assets/player/green/frames.tres" id="5_frames"]
+[ext_resource type="Texture2D" path="res://assets/icons/home.png" id="6_home"]
+[ext_resource type="Texture2D" path="res://assets/icons/shoppingBasket.png" id="7_shop"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Jozino" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(280, 541)
+scale = Vector2(1.6, 1.6)
+sprite_frames = ExtResource("5_frames")
+animation = &"idle"
+
+[node name="Title" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 40.0
+offset_bottom = 220.0
+grow_horizontal = 2
+pivot_offset = Vector2(640, 90)
+mouse_filter = 2
+theme_override_constants/separation = -30
+
+[node name="Name" type="Label" parent="Title"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 120
+text = "Jožino"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Title"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_colors/font_color = Color(1, 0.86, 0.3, 1)
+theme_override_font_sizes/font_size = 52
+text = "Dobrodružstvo"
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -460.0
+offset_top = -60.0
+offset_right = -90.0
+offset_bottom = 230.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="PlayButton" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Hrať"
+
+[node name="VillageButton" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+text = "Dedina"
+icon = ExtResource("6_home")
+expand_icon = true
+
+[node name="ShopButton" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+text = "Obchod"
+icon = ExtResource("7_shop")
+expand_icon = true
+
+[node name="CurrencyBar" parent="." instance=ExtResource("3_bar")]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 76.0
+
+[node name="SettingsButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -112.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 108.0
+grow_horizontal = 0
+theme_type_variation = &"RoundButton"
+icon = ExtResource("4_gear")
+icon_alignment = 1
+expand_icon = true

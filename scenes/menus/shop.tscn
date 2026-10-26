@@ -1,0 +1,103 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/menus/shop.gd" id="1_shop"]
+[ext_resource type="PackedScene" path="res://scenes/menus/menu_background.tscn" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/currency_bar.tscn" id="3_bar"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrowLeft.png" id="4_back"]
+
+[node name="Shop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shop")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 112.0
+offset_bottom = 108.0
+theme_type_variation = &"RoundButton"
+icon = ExtResource("4_back")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_type_variation = &"TitleLabel"
+text = "Obchod"
+horizontal_alignment = 1
+
+[node name="CurrencyBar" parent="." instance=ExtResource("3_bar")]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 36.0
+offset_right = 400.0
+offset_bottom = 92.0
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 118.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Tabs" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="OutfitsTab" type="Button" parent="Content/Tabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+toggle_mode = true
+text = "Obleky"
+
+[node name="ItemsTab" type="Button" parent="Content/Tabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+toggle_mode = true
+text = "Predmety"
+
+[node name="Hint" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"OutlinedLabel"
+theme_override_font_sizes/font_size = 24
+text = "Kúpený oblek si Jožino hneď oblečie."
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Content"]
+layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 0
+
+[node name="Center" type="CenterContainer" parent="Content/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Cards" type="HBoxContainer" parent="Content/Scroll/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 16

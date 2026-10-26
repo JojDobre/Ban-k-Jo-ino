@@ -93,23 +93,25 @@ func _build_player_frames() -> void:
 		"hurt": [14.0, false],
 		"die": [10.0, false],
 	}
-	var frames := SpriteFrames.new()
-	frames.remove_animation("default")
-	for anim: String in animations:
-		var texture: Texture2D = load("res://assets/player/jozino_%s.png" % anim)
-		var height := texture.get_height()
-		# Snímky sú vedľa seba; šírka snímky je vždy 107 px (pozri prepare_assets.py).
-		var frame_width := 107
-		var count := texture.get_width() / frame_width
-		frames.add_animation(anim)
-		frames.set_animation_speed(anim, animations[anim][0])
-		frames.set_animation_loop(anim, animations[anim][1])
-		for i in count:
-			var atlas := AtlasTexture.new()
-			atlas.atlas = texture
-			atlas.region = Rect2(i * frame_width, 0, frame_width, height)
-			frames.add_frame(anim, atlas)
-	_save(frames, "res://assets/player/jozino_frames.tres")
+	# Obleky – zhodné s MINER_OUTFITS v tools/prepare_assets.py.
+	for outfit: String in ["green", "yellow", "red_shirt", "blue", "old"]:
+		var frames := SpriteFrames.new()
+		frames.remove_animation("default")
+		for anim: String in animations:
+			var texture: Texture2D = load("res://assets/player/%s/jozino_%s.png" % [outfit, anim])
+			var height := texture.get_height()
+			# Snímky sú vedľa seba; šírka snímky je vždy 107 px (pozri prepare_assets.py).
+			var frame_width := 107
+			var count := texture.get_width() / frame_width
+			frames.add_animation(anim)
+			frames.set_animation_speed(anim, animations[anim][0])
+			frames.set_animation_loop(anim, animations[anim][1])
+			for i in count:
+				var atlas := AtlasTexture.new()
+				atlas.atlas = texture
+				atlas.region = Rect2(i * frame_width, 0, frame_width, height)
+				frames.add_frame(anim, atlas)
+		_save(frames, "res://assets/player/%s/frames.tres" % outfit)
 
 
 func _build_enemy_frames(enemy_name: String, animations: Dictionary, fps: float) -> void:

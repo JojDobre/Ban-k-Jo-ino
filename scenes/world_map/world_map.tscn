@@ -1,0 +1,253 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scripts/world_map/world_map.gd" id="1_map"]
+[ext_resource type="PackedScene" path="res://scenes/menus/menu_background.tscn" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/currency_bar.tscn" id="3_bar"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrowLeft.png" id="4_back"]
+[ext_resource type="Texture2D" path="res://assets/icons/home.png" id="5_home"]
+[ext_resource type="Texture2D" path="res://assets/icons/shoppingBasket.png" id="6_shop"]
+[ext_resource type="Texture2D" path="res://assets/map/castle.png" id="7_castle"]
+[ext_resource type="Texture2D" path="res://assets/map/tree_pine.png" id="8_tree1"]
+[ext_resource type="Texture2D" path="res://assets/map/tree_round.png" id="9_tree2"]
+[ext_resource type="Texture2D" path="res://assets/map/tree_pine_dark.png" id="10_tree3"]
+[ext_resource type="SpriteFrames" path="res://assets/player/green/frames.tres" id="11_frames"]
+[ext_resource type="Texture2D" path="res://assets/items/star.png" id="12_star"]
+[ext_resource type="Texture2D" path="res://assets/icons/locked.png" id="13_lock"]
+[ext_resource type="Material" path="res://assets/shaders/sway_material.tres" id="14_sway"]
+
+[node name="WorldMap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_map")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="Castle" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(1130, 606)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("7_castle")
+offset = Vector2(0, -91)
+
+[node name="ComingSoon" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+offset_left = 990.0
+offset_top = 356.0
+offset_right = 1270.0
+offset_bottom = 406.0
+mouse_filter = 2
+
+[node name="Lock" type="TextureRect" parent="ComingSoon"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+texture = ExtResource("13_lock")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="ComingSoon"]
+layout_mode = 2
+theme_type_variation = &"OutlinedLabel"
+theme_override_font_sizes/font_size = 24
+text = "Staré bane – čoskoro"
+
+[node name="Tree1" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = ExtResource("14_sway")
+position = Vector2(100, 606)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("8_tree1")
+offset = Vector2(0, -146)
+
+[node name="Tree2" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = ExtResource("14_sway")
+position = Vector2(460, 606)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("9_tree2")
+offset = Vector2(0, -115)
+
+[node name="Tree3" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = ExtResource("14_sway")
+position = Vector2(790, 606)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("10_tree3")
+offset = Vector2(0, -120)
+
+[node name="Map" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Jozino" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(256, 300)
+scale = Vector2(0.9, 0.9)
+sprite_frames = ExtResource("11_frames")
+animation = &"idle"
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 112.0
+offset_bottom = 108.0
+theme_type_variation = &"RoundButton"
+icon = ExtResource("4_back")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_type_variation = &"TitleLabel"
+text = "Zelené údolie"
+horizontal_alignment = 1
+
+[node name="CurrencyBar" parent="." instance=ExtResource("3_bar")]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 36.0
+offset_right = 400.0
+offset_bottom = 92.0
+
+[node name="TopRight" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 108.0
+grow_horizontal = 0
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="VillageButton" type="Button" parent="TopRight"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+theme_type_variation = &"RoundButton"
+icon = ExtResource("5_home")
+icon_alignment = 1
+expand_icon = true
+
+[node name="ShopButton" type="Button" parent="TopRight"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+theme_type_variation = &"RoundButton"
+icon = ExtResource("6_shop")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Popup" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Center" type="CenterContainer" parent="Popup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PopupPanel" type="PanelContainer" parent="Popup/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Popup/Center/PopupPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LevelTitle" type="Label" parent="Popup/Center/PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Level 1"
+horizontal_alignment = 1
+
+[node name="LevelName" type="Label" parent="Popup/Center/PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Prvý krok"
+horizontal_alignment = 1
+
+[node name="PopupStars" type="HBoxContainer" parent="Popup/Center/PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="Star1" type="TextureRect" parent="Popup/Center/PopupPanel/VBox/PopupStars"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+texture = ExtResource("12_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star2" type="TextureRect" parent="Popup/Center/PopupPanel/VBox/PopupStars"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+texture = ExtResource("12_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star3" type="TextureRect" parent="Popup/Center/PopupPanel/VBox/PopupStars"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+texture = ExtResource("12_star")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LevelStatus" type="Label" parent="Popup/Center/PopupPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Nový level"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Popup/Center/PopupPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="Popup/Center/PopupPanel/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_type_variation = &"DangerButton"
+text = "Zavrieť"
+
+[node name="PlayButton" type="Button" parent="Popup/Center/PopupPanel/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "Hrať"

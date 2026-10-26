@@ -1,0 +1,282 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://scripts/village/village.gd" id="1_village"]
+[ext_resource type="PackedScene" path="res://scenes/menus/menu_background.tscn" id="2_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/currency_bar.tscn" id="3_bar"]
+[ext_resource type="Texture2D" path="res://assets/icons/arrowLeft.png" id="4_back"]
+[ext_resource type="Texture2D" path="res://assets/icons/map.png" id="5_map"]
+[ext_resource type="PackedScene" path="res://scenes/village/building_spot.tscn" id="6_spot"]
+[ext_resource type="Texture2D" path="res://assets/village/house_0.svg" id="7_h0"]
+[ext_resource type="Texture2D" path="res://assets/village/house_1.svg" id="8_h1"]
+[ext_resource type="Texture2D" path="res://assets/village/mine_0.svg" id="9_m0"]
+[ext_resource type="Texture2D" path="res://assets/village/mine_1.svg" id="10_m1"]
+[ext_resource type="Texture2D" path="res://assets/village/mine_2.svg" id="11_m2"]
+[ext_resource type="Texture2D" path="res://assets/village/mine_3.svg" id="12_m3"]
+[ext_resource type="Texture2D" path="res://assets/village/smithy_0.svg" id="13_s0"]
+[ext_resource type="Texture2D" path="res://assets/village/smithy_1.svg" id="14_s1"]
+[ext_resource type="Texture2D" path="res://assets/village/smithy_2.svg" id="15_s2"]
+[ext_resource type="Texture2D" path="res://assets/village/shop.svg" id="16_shop"]
+[ext_resource type="Texture2D" path="res://assets/village/cart.svg" id="17_cart"]
+[ext_resource type="Texture2D" path="res://assets/village/gold_pile.svg" id="18_pile"]
+[ext_resource type="SpriteFrames" path="res://assets/player/old/frames.tres" id="19_old"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud_coin.png" id="20_coin"]
+[ext_resource type="Texture2D" path="res://assets/items/gem_yellow.png" id="21_gold"]
+
+[node name="Village" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_village")
+
+[node name="Background" parent="." instance=ExtResource("2_bg")]
+layout_mode = 1
+
+[node name="House" parent="." instance=ExtResource("6_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+building_id = "house"
+textures = Array[Texture2D]([ExtResource("7_h0"), ExtResource("8_h1")])
+
+[node name="Mine" parent="." instance=ExtResource("6_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 360.0
+offset_right = 700.0
+building_id = "mine"
+textures = Array[Texture2D]([ExtResource("9_m0"), ExtResource("10_m1"), ExtResource("11_m2"), ExtResource("12_m3")])
+
+[node name="Blacksmith" parent="." instance=ExtResource("6_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 720.0
+offset_right = 1060.0
+building_id = "blacksmith"
+textures = Array[Texture2D]([ExtResource("13_s0"), ExtResource("14_s1"), ExtResource("15_s2")])
+
+[node name="Shop" parent="." instance=ExtResource("6_spot")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1080.0
+offset_right = 1420.0
+building_id = "shop"
+textures = Array[Texture2D]([ExtResource("16_shop")])
+
+[node name="Cart" type="Control" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 110)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+offset_bottom = 110.0
+
+[node name="Pile" type="TextureRect" parent="Cart"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_top = -40.0
+offset_right = 140.0
+offset_bottom = 34.0
+pivot_offset = Vector2(65, 60)
+mouse_filter = 2
+texture = ExtResource("18_pile")
+
+[node name="CartSprite" type="TextureRect" parent="Cart"]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 110.0
+mouse_filter = 2
+texture = ExtResource("17_cart")
+
+[node name="CartLabel" type="Label" parent="Cart"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -20.0
+offset_top = -84.0
+offset_right = 170.0
+offset_bottom = -34.0
+theme_type_variation = &"OutlinedLabel"
+theme_override_font_sizes/font_size = 30
+text = "+0"
+horizontal_alignment = 1
+
+[node name="Miner" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(600, 560)
+scale = Vector2(0.75, 0.75)
+sprite_frames = ExtResource("19_old")
+animation = &"idle"
+
+[node name="Smith" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(800, 560)
+scale = Vector2(0.75, 0.75)
+sprite_frames = ExtResource("19_old")
+animation = &"idle"
+
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 112.0
+offset_bottom = 108.0
+theme_type_variation = &"RoundButton"
+icon = ExtResource("4_back")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_type_variation = &"TitleLabel"
+text = "Dedina"
+horizontal_alignment = 1
+
+[node name="CurrencyBar" parent="." instance=ExtResource("3_bar")]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 36.0
+offset_right = 400.0
+offset_bottom = 92.0
+
+[node name="MapButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -112.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 108.0
+grow_horizontal = 0
+theme_type_variation = &"RoundButton"
+icon = ExtResource("5_map")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Panel" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Center" type="CenterContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelBox" type="PanelContainer" parent="Panel/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Center/PanelBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PanelTitle" type="Label" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 46
+text = "Baňa"
+horizontal_alignment = 1
+
+[node name="PanelLevel" type="Label" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.35, 0.28, 1)
+theme_override_font_sizes/font_size = 24
+text = "Úroveň 1 / 3"
+horizontal_alignment = 1
+
+[node name="CurrentEffect" type="Label" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Teraz: 30 mincí za hodinu"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="NextEffect" type="Label" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.5, 0.2, 1)
+theme_override_font_sizes/font_size = 26
+text = "Ďalej: 60 mincí za hodinu"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Cost" type="HBoxContainer" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="CoinIcon" type="TextureRect" parent="Panel/Center/PanelBox/VBox/Cost"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("20_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CostCoins" type="Label" parent="Panel/Center/PanelBox/VBox/Cost"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "120"
+
+[node name="GoldIcon" type="TextureRect" parent="Panel/Center/PanelBox/VBox/Cost"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("21_gold")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CostGold" type="Label" parent="Panel/Center/PanelBox/VBox/Cost"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1"
+
+[node name="Missing" type="Label" parent="Panel/Center/PanelBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.25, 0.2, 1)
+theme_override_font_sizes/font_size = 24
+text = "Chýba 35 mincí"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/Center/PanelBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/Center/PanelBox/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_type_variation = &"DangerButton"
+text = "Zavrieť"
+
+[node name="BuyButton" type="Button" parent="Panel/Center/PanelBox/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "Vylepšiť"

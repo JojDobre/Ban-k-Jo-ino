@@ -2,7 +2,8 @@ class_name PlayerProgress
 extends RefCounted
 ## Trvalý stav hráča (GDD kap. 7.1). Jedinú inštanciu vlastní GameState.
 
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
+const DEFAULT_OUTFIT := "green"
 
 var coins: int = 0
 var gold: int = 0
@@ -15,6 +16,12 @@ var claimed_rewards: Array[String] = []
 var building_levels: Dictionary = {}
 var last_mine_claim: int = 0
 var settings: Dictionary = {"music_volume": 0.8, "sfx_volume": 1.0, "vibration": true}
+## Verzia 2: obleky z obchodu, spotrebné predmety a posledný hraný level.
+var owned_outfits: Array[String] = [DEFAULT_OUTFIT]
+var outfit: String = DEFAULT_OUTFIT
+## item_id -> počet kusov (napr. "start_shield")
+var items: Dictionary = {}
+var last_level: String = ""
 
 
 func to_dict() -> Dictionary:
@@ -29,6 +36,10 @@ func to_dict() -> Dictionary:
 		"building_levels": building_levels.duplicate(),
 		"last_mine_claim": last_mine_claim,
 		"settings": settings.duplicate(),
+		"owned_outfits": owned_outfits.duplicate(),
+		"outfit": outfit,
+		"items": items.duplicate(),
+		"last_level": last_level,
 	}
 
 
@@ -60,11 +71,30 @@ static func from_dict(data: Dictionary) -> PlayerProgress:
 		for key: Variant in raw_settings:
 			if p.settings.has(key) and typeof(raw_settings[key]) == typeof(p.settings[key]):
 				p.settings[key] = raw_settings[key]
+
+	var outfits := _string_array(data.get("owned_outfits"))
+	if not outfits.has(DEFAULT_OUTFIT):
+		outfits.push_front(DEFAULT_OUTFIT)
+	p.owned_outfits = outfits
+	var chosen: Variant = data.get("outfit")
+	p.outfit = chosen if chosen is String and outfits.has(chosen) else DEFAULT_OUTFIT
+	var raw_items: Variant = data.get("items")
+	if raw_items is Dictionary:
+		for item_id: Variant in raw_items:
+			var count := maxi(_int(raw_items[item_id], 0), 0)
+			if count > 0:
+				p.items[str(item_id)] = count
+	var last: Variant = data.get("last_level")
+	p.last_level = last if last is String else ""
 	return p
 
 
 func get_building_level(building_id: String) -> int:
 	return building_levels.get(building_id, 0)
+
+
+func get_item_count(item_id: String) -> int:
+	return items.get(item_id, 0)
 
 
 func get_stars(level_id: String) -> Array[String]:

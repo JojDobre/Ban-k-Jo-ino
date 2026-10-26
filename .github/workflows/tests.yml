@@ -31,7 +31,13 @@ jobs:
           if grep -E "SCRIPT ERROR" smoke.log; then exit 1; fi
           grep -q "KONIEC" smoke.log
 
-      - name: Dosiahnuteľnosť miest v leveli
+      - name: Všetky obrazovky sa otvoria bez chýb
+        run: |
+          ./godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn 2>&1 | tee scenes.log
+          if grep -E "SCRIPT ERROR" scenes.log; then exit 1; fi
+          grep -q "OBRAZOVKY: OK" scenes.log
+
+      - name: Dosiahnuteľnosť miest v leveloch
         run: |
           ./godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn 2>&1 | tee checks.log
           if grep -E "SCRIPT ERROR" checks.log; then exit 1; fi

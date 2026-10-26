@@ -9,6 +9,8 @@ const FAIL_COIN_SHARE := 0.5
 ## Explicitný zoznam – DirAccess nad res:// sa v exportovanom builde správa inak.
 const LEVELS: Array[LevelDefinition] = [
 	preload("res://data/levels/level_01.tres"),
+	preload("res://data/levels/level_02.tres"),
+	preload("res://data/levels/level_03.tres"),
 ]
 
 
@@ -17,6 +19,24 @@ func get_level(level_id: String) -> LevelDefinition:
 		if level.id == level_id:
 			return level
 	return null
+
+
+func start_level(level_id: String) -> void:
+	var level := get_level(level_id)
+	if level == null or not is_unlocked(level_id):
+		return
+	GameState.progress.last_level = level_id
+	SaveManager.request_save()
+	GameState.change_scene(level.scene_path)
+
+
+## Level, na ktorom hráč práve je: prvý odomknutý nedokončený, inak naposledy hraný.
+func get_current_level_id() -> String:
+	for level in LEVELS:
+		if is_unlocked(level.id) and not is_completed(level.id):
+			return level.id
+	var last := GameState.progress.last_level
+	return last if get_level(last) != null else LEVELS[0].id
 
 
 func is_unlocked(level_id: String) -> bool:

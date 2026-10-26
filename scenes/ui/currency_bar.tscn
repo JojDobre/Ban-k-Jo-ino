@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/currency_bar.gd" id="1_bar"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud_coin.png" id="2_coin"]
+[ext_resource type="Texture2D" path="res://assets/items/gem_yellow.png" id="3_gold"]
+
+[node name="CurrencyBar" type="HBoxContainer"]
+mouse_filter = 2
+theme_override_constants/separation = 6
+script = ExtResource("1_bar")
+
+[node name="CoinIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinsLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_type_variation = &"OutlinedLabel"
+text = "0"
+
+[node name="GoldIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_gold")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="."]
+layout_mode = 2
+theme_type_variation = &"OutlinedLabel"
+text = "0"

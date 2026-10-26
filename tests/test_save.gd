@@ -60,3 +60,21 @@ func test_save_contains_version() -> void:
 	save_manager.save_progress(PlayerProgress.new())
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(save_manager.save_path))
 	check_eq(int(data.save_version), PlayerProgress.SAVE_VERSION, "verzia dát")
+
+
+func test_migration_from_version_1() -> void:
+	var file := FileAccess.open(save_manager.save_path, FileAccess.WRITE)
+	file.store_string(JSON.stringify({"save_version": 1, "coins": 42, "completed_levels": ["level_01"]}))
+	file.close()
+	var loaded: PlayerProgress = save_manager.load_progress()
+	check_eq(loaded.coins, 42, "mince zo starej verzie")
+	check_eq(loaded.owned_outfits, ["green"] as Array[String], "predvolený oblek")
+	check_eq(loaded.outfit, "green", "zvolený oblek")
+	check(loaded.items.is_empty(), "žiadne predmety")
+
+
+func test_invalid_outfit_falls_back() -> void:
+	var loaded := PlayerProgress.from_dict({"owned_outfits": ["yellow"], "outfit": "old", "items": {"start_shield": -2}})
+	check(loaded.owned_outfits.has("green"), "zelený oblek vždy vlastnený")
+	check_eq(loaded.outfit, "green", "nevlastnený oblek sa nepoužije")
+	check(loaded.items.is_empty(), "záporné predmety sa zahodia")

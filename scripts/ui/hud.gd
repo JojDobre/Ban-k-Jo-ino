@@ -4,6 +4,7 @@ extends CanvasLayer
 ## Iba zobrazuje stav pokusu; nič nepočíta.
 
 signal restart_requested
+signal map_requested
 
 const HEART_FULL := preload("res://assets/ui/hud_heart.png")
 const HEART_EMPTY := preload("res://assets/ui/hud_heart_empty.png")
@@ -35,14 +36,17 @@ var _shown_coins := -1
 
 func _ready() -> void:
 	_overlay.hide()
-	# Plynulý nábeh obrazu pri štarte levelu.
-	var fade := %Fade as ColorRect
-	var tween := create_tween()
-	tween.tween_property(fade, "color:a", 0.0, 0.6).set_delay(0.1)
-	tween.tween_callback(fade.hide)
+
 	%PauseButton.pressed.connect(_toggle_pause)
 	_continue_button.pressed.connect(_toggle_pause)
 	%RestartButton.pressed.connect(func() -> void: restart_requested.emit())
+	%MapButton.pressed.connect(func() -> void: map_requested.emit())
+
+
+func _notification(what: int) -> void:
+	# Androidové tlačidlo Späť: pauza / pokračovanie.
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST and (_continue_button.visible or not _overlay.visible):
+		_toggle_pause()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -78,6 +82,7 @@ func show_results(result: Dictionary) -> void:
 	lines.append("Spolu: %d mincí, %d zlata" % [GameState.progress.coins, GameState.progress.gold])
 	_info_label.text = "\n".join(lines)
 	_continue_button.hide()
+	%MapButton.text = "Pokračovať" if result.success else "Mapa sveta"
 	%PauseButton.hide()
 	_overlay.show()
 
@@ -88,6 +93,7 @@ func _toggle_pause() -> void:
 	_touch_controls.release_all()
 	_title_label.text = "Pauza – %s" % _level_name
 	_info_label.text = ""
+	%MapButton.text = "Mapa sveta"
 	_continue_button.show()
 	_overlay.visible = paused
 
