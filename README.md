@@ -24,6 +24,37 @@ Prvý technický míľnik – ovládateľná postava s dotykovým ovládaním v 
 2. V Godote: **Import** → vyber `project.godot`.
 3. **F5** spustí hru.
 
+<details>
+<summary><b>Podrobný návod krok za krokom (prvé spustenie)</b></summary>
+
+**1. Stiahni hru z GitHubu**
+
+- Na stránke repozitára klikni na zelené tlačidlo **Code** → **Download ZIP**.
+- ZIP rozbaľ (pravý klik → *Extrahovať všetko*) do priečinka, napr. `Dokumenty\Jozino`.
+- Skontroluj, že v priečinku priamo vidíš súbor `project.godot` (nie ďalší vnorený priečinok).
+
+**2. Stiahni Godot 4.4.1**
+
+- Otvor [godotengine.org/download/archive/4.4.1-stable](https://godotengine.org/download/archive/4.4.1-stable/).
+- Stiahni verziu pre svoj systém – **Standard**, nie *.NET*.
+- Godot sa neinštaluje: rozbaľ ZIP a spusti súbor `Godot_v4.4.1-stable_win64.exe`.
+
+**3. Otvor projekt**
+
+- Pri spustení sa ukáže **Project Manager** (zoznam projektov, na začiatku prázdny).
+- Klikni **Import** (hore vľavo) → **Browse** → nájdi rozbalený priečinok → vyber `project.godot` → **Open** → **Import** (príp. **Import & Edit**).
+- Prvé otvorenie chvíľu trvá (Godot si pripravuje súbory). Prípadné žlté varovania v spodnom paneli *Output* pri prvom importe sú v poriadku.
+
+**4. Spusti hru**
+
+- Stlač **F5** alebo klikni na trojuholník ▶ vpravo hore.
+- Ovládanie: šípky/A, D, skok medzerník, pauza Esc.
+
+**Aktualizácia:** keď sa v repozitári objaví nová verzia, stiahni ZIP znova a prepíš ním starý priečinok
+(alebo použi [GitHub Desktop](https://desktop.github.com/) → *Clone repository* a potom len *Fetch / Pull*).
+
+</details>
+
 Ovládanie na počítači: šípky alebo A/D, skok medzerník/W/šípka hore, pauza Esc.
 Na telefóne sa zobrazia dotykové tlačidlá.
 
