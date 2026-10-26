@@ -19,8 +19,10 @@ const BODY_SIZE := Vector2(40, 56)
 @export var gravity: float = 2000.0
 @export var fall_gravity_multiplier: float = 1.6
 @export var max_fall_speed: float = 1150.0
-## Násobič rýchlosti stúpania po pustení tlačidla skoku.
-@export var jump_cut_multiplier: float = 0.45
+## Násobič rýchlosti stúpania po pustení tlačidla skoku (1.0 = vždy plný skok).
+@export var jump_cut_multiplier: float = 0.7
+## Skok sa neskráti skôr ako po tomto čase – aj krátke ťuknutie dá ~80 % výšky.
+@export var min_jump_hold_time: float = 0.15
 ## Ako dlho po zídení z hrany ešte možno skočiť.
 @export var coyote_time: float = 0.10
 ## Ako dlho sa pamätá stlačenie skoku pred dopadom.
@@ -42,6 +44,7 @@ var _coyote_timer := 0.0
 var _jump_buffer_timer := 0.0
 var _invulnerable_timer := 0.0
 var _jump_held := false
+var _jump_time := 0.0
 
 
 func _physics_process(delta: float) -> void:
@@ -62,7 +65,8 @@ func _physics_process(delta: float) -> void:
 		_jump()
 
 	# Premenlivá výška skoku: pustenie tlačidla počas stúpania skok skráti.
-	if _jump_held and not jump_down:
+	_jump_time += delta
+	if _jump_held and not jump_down and _jump_time >= min_jump_hold_time:
 		_jump_held = false
 		if velocity.y < 0.0:
 			velocity.y *= jump_cut_multiplier
@@ -95,6 +99,7 @@ func _apply_gravity(delta: float) -> void:
 func _jump() -> void:
 	velocity.y = jump_velocity
 	_jump_held = true
+	_jump_time = 0.0
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 
