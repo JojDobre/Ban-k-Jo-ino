@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/building_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "blacksmith"
+display_name = "Kováčska dielňa"
+max_level = 2
+coin_costs = Array[int]([100, 200])
+gold_costs = Array[int]([1, 2])
+production_per_hour = Array[int]([])
+effect_descriptions = Array[String](["+1 srdce v leveloch", "Magnet na mince"])

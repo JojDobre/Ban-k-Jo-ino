@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/building_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "house"
+display_name = "Jožinov dom"
+max_level = 1
+coin_costs = Array[int]([0])
+gold_costs = Array[int]([0])
+production_per_hour = Array[int]([])
+effect_descriptions = Array[String](["Opravený dom, odomkne stavebné miesta"])

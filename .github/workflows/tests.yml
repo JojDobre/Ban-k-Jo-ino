@@ -1,0 +1,31 @@
+name: Testy
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.4.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stiahnuť Godot
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot
+
+      - name: Import projektu
+        run: ./godot --headless --path . --import
+
+      - name: Testy logiky
+        run: ./godot --headless --path . -s res://tests/run_tests.gd
+
+      - name: Smoke test levelu
+        run: |
+          ./godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn 2>&1 | tee smoke.log
+          if grep -E "SCRIPT ERROR|^ERROR" smoke.log; then exit 1; fi
+          grep -q "KONIEC" smoke.log

@@ -1,0 +1,19 @@
+# Godot
+.godot/
+.import/
+export.cfg
+export_credentials.cfg
+*.translation
+
+# Android
+android/build/
+*.apk
+*.aab
+*.keystore
+!debug.keystore.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.tmp

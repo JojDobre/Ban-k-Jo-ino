@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/building_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = "mine"
+display_name = "Baňa"
+max_level = 3
+coin_costs = Array[int]([50, 120, 250])
+gold_costs = Array[int]([0, 1, 2])
+production_per_hour = Array[int]([30, 60, 120])
+effect_descriptions = Array[String](["30 mincí za hodinu", "60 mincí za hodinu", "120 mincí za hodinu"])

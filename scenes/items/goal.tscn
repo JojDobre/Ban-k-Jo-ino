@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/goal.gd" id="1_item"]
+
+[sub_resource type="RectangleShape2D" id="Shape_item"]
+size = Vector2(60, 140)
+
+[node name="Goal" type="Area2D" groups=["goal"]]
+collision_layer = 8
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_item")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -70)
+shape = SubResource("Shape_item")

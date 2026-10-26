@@ -1,0 +1,218 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/level_controller.gd" id="1_ctrl"]
+[ext_resource type="Resource" path="res://data/levels/level_01.tres" id="2_def"]
+[ext_resource type="Script" path="res://scripts/levels/block.gd" id="3_block"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/items/coin.tscn" id="6_coin"]
+[ext_resource type="PackedScene" path="res://scenes/items/star.tscn" id="7_star"]
+[ext_resource type="PackedScene" path="res://scenes/items/chest.tscn" id="8_chest"]
+[ext_resource type="PackedScene" path="res://scenes/items/checkpoint.tscn" id="9_checkpoint"]
+[ext_resource type="PackedScene" path="res://scenes/items/goal.tscn" id="10_goal"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/basic_enemy.tscn" id="11_enemy"]
+
+[node name="Level01" type="Node2D"]
+script = ExtResource("1_ctrl")
+level_definition = ExtResource("2_def")
+fall_limit_y = 900.0
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Block0" type="StaticBody2D" parent="Terrain"]
+position = Vector2(-64, -400)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(64, 1300)
+
+[node name="Block1" type="StaticBody2D" parent="Terrain"]
+position = Vector2(0, 600)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(1400, 200)
+
+[node name="Block2" type="StaticBody2D" parent="Terrain"]
+position = Vector2(480, 470)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(192, 28)
+one_way = true
+
+[node name="Block3" type="StaticBody2D" parent="Terrain"]
+position = Vector2(760, 370)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(192, 28)
+one_way = true
+
+[node name="Block4" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1040, 470)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(160, 28)
+one_way = true
+
+[node name="Block5" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1560, 600)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(1040, 200)
+
+[node name="Block6" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2100, 450)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(160, 28)
+one_way = true
+
+[node name="Block7" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2320, 330)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(160, 28)
+one_way = true
+
+[node name="Block8" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2760, 600)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(1300, 200)
+
+[node name="Block9" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2960, 520)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(140, 80)
+
+[node name="Block10" type="StaticBody2D" parent="Terrain"]
+position = Vector2(3420, 520)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(140, 80)
+
+[node name="Block11" type="StaticBody2D" parent="Terrain"]
+position = Vector2(4060, -400)
+collision_mask = 0
+script = ExtResource("3_block")
+size = Vector2(64, 1300)
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin0" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(260, 560)
+
+[node name="Coin1" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(320, 560)
+
+[node name="Coin2" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(380, 560)
+
+[node name="Coin3" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(440, 560)
+
+[node name="Coin4" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(500, 560)
+
+[node name="Coin5" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(520, 430)
+
+[node name="Coin6" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(576, 430)
+
+[node name="Coin7" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(632, 430)
+
+[node name="Coin8" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(800, 330)
+
+[node name="Coin9" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(856, 330)
+
+[node name="Coin10" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(912, 330)
+
+[node name="Coin11" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1440, 520)
+
+[node name="Coin12" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1480, 520)
+
+[node name="Coin13" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1520, 520)
+
+[node name="Coin14" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1700, 560)
+
+[node name="Coin15" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1760, 560)
+
+[node name="Coin16" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1820, 560)
+
+[node name="Coin17" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(1880, 560)
+
+[node name="Coin18" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(2140, 410)
+
+[node name="Coin19" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(2190, 410)
+
+[node name="Coin20" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(2240, 410)
+
+[node name="Coin21" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(2860, 560)
+
+[node name="Coin22" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(2910, 560)
+
+[node name="Coin23" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(3150, 560)
+
+[node name="Coin24" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(3210, 560)
+
+[node name="Coin25" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(3270, 560)
+
+[node name="Coin26" parent="Coins" instance=ExtResource("6_coin")]
+position = Vector2(3330, 560)
+
+[node name="Secrets" type="Node2D" parent="."]
+
+[node name="Star_a" parent="Secrets" instance=ExtResource("7_star")]
+position = Vector2(856, 250)
+star_id = "a"
+
+[node name="Star_b" parent="Secrets" instance=ExtResource("7_star")]
+position = Vector2(2400, 270)
+star_id = "b"
+
+[node name="Star_c" parent="Secrets" instance=ExtResource("7_star")]
+position = Vector2(3490, 450)
+star_id = "c"
+
+[node name="Chest" parent="Secrets" instance=ExtResource("8_chest")]
+position = Vector2(1120, 452)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Enemy0" parent="Enemies" instance=ExtResource("11_enemy")]
+position = Vector2(2000, 570)
+direction = -1
+
+[node name="Enemy1" parent="Enemies" instance=ExtResource("11_enemy")]
+position = Vector2(3250, 570)
+direction = 1
+
+[node name="Checkpoint" parent="." instance=ExtResource("9_checkpoint")]
+position = Vector2(1660, 600)
+
+[node name="Goal" parent="." instance=ExtResource("10_goal")]
+position = Vector2(3900, 600)
+
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector2(120, 570)
+
+[node name="Hud" parent="." instance=ExtResource("5_hud")]
