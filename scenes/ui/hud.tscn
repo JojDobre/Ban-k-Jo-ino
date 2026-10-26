@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="2_touch"]
 [ext_resource type="Script" path="res://scripts/ui/touch_button.gd" id="3_button"]
 [ext_resource type="Texture2D" path="res://assets/ui/hud_coin.png" id="4_coin"]
+[ext_resource type="Texture2D" path="res://assets/ui/hud_key_yellow.png" id="5_key"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hud"]
 font_size = 40
@@ -67,14 +68,36 @@ corner_radius_top_right = 18
 corner_radius_bottom_right = 18
 corner_radius_bottom_left = 18
 
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.08, 0.2, 0.28)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1.05, 0.5)
+
 [node name="Hud" type="CanvasLayer"]
 process_mode = 3
 script = ExtResource("1_hud")
 
+[node name="Vignette" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
+
 [node name="TopBar" type="HBoxContainer" parent="."]
 offset_left = 24.0
 offset_top = 16.0
-offset_right = 1000.0
+offset_right = 1150.0
 offset_bottom = 72.0
 mouse_filter = 2
 theme_override_constants/separation = 36
@@ -109,6 +132,22 @@ unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 2
+
+[node name="KeyIcon" type="TextureRect" parent="TopBar"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_key")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Powerups" type="HBoxContainer" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
 
 [node name="PauseButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -262,3 +301,13 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/focus = SubResource("StyleBoxFlat_button")
 text = "Hrať znova"
+
+[node name="Fade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.08, 0.06, 0.12, 1)

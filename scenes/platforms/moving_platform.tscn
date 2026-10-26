@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/platforms/moving_platform.gd" id="1_platform"]
+[ext_resource type="Texture2D" path="res://assets/tilesets/terrain_grass.png" id="2_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_left"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_middle"]
+atlas = ExtResource("2_atlas")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_right"]
+atlas = ExtResource("2_atlas")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(188, 20)
+
+[node name="MovingPlatform" type="AnimatableBody2D"]
+collision_mask = 0
+script = ExtResource("1_platform")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_platform")
+one_way_collision = true
+
+[node name="Left" type="Sprite2D" parent="."]
+position = Vector2(-64, 32)
+texture = SubResource("AtlasTexture_left")
+
+[node name="Middle" type="Sprite2D" parent="."]
+position = Vector2(0, 32)
+texture = SubResource("AtlasTexture_middle")
+
+[node name="Right" type="Sprite2D" parent="."]
+position = Vector2(64, 32)
+texture = SubResource("AtlasTexture_right")

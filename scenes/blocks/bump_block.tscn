@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/blocks/bump_block.gd" id="1_block"]
+[ext_resource type="Texture2D" path="res://assets/blocks/block_coin_active.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_block"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_top"]
+size = Vector2(56, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_reveal"]
+size = Vector2(56, 64)
+
+[node name="BumpBlock" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_block")
+active_texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_block")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="Top" type="Area2D" parent="."]
+position = Vector2(0, -39)
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Top"]
+shape = SubResource("RectangleShape2D_top")
+
+[node name="Reveal" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Reveal"]
+shape = SubResource("RectangleShape2D_reveal")

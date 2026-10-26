@@ -13,8 +13,17 @@ const SOUNDS := {
 	&"stomp": preload("res://assets/audio/sfx_bump.ogg"),
 	&"fail": preload("res://assets/audio/sfx_disappear.ogg"),
 	&"win": preload("res://assets/audio/win.mp3"),
+	&"bump": preload("res://assets/audio/sfx_bump.ogg"),
+	&"break": preload("res://assets/audio/break.ogg"),
+	&"secret": preload("res://assets/audio/secret.ogg"),
+	&"powerup": preload("res://assets/audio/powerup.ogg"),
+	&"key": preload("res://assets/audio/key.ogg"),
+	&"slam": preload("res://assets/audio/slam.ogg"),
+	&"shield_pop": preload("res://assets/audio/shield_pop.ogg"),
+	&"switch": preload("res://assets/audio/switch.ogg"),
+	&"alert": preload("res://assets/audio/alert.ogg"),
 }
-const POOL_SIZE := 8
+const POOL_SIZE := 12
 
 var _players: Array[AudioStreamPlayer] = []
 var _next := 0

@@ -27,7 +27,13 @@ func _initialize() -> void:
 	_build_tileset()
 	_build_player_frames()
 	_build_enemy_frames("slime", {"walk": ["slime_normal_walk_a", "slime_normal_walk_b"], "dead": ["slime_normal_flat"]}, 6.0)
+	_build_enemy_frames("spike_slime", {"walk": ["slime_spike_walk_a", "slime_spike_walk_b"], "dead": ["slime_spike_flat"]}, 6.0)
 	_build_enemy_frames("snail", {"walk": ["snail_walk_a", "snail_walk_b"], "dead": ["snail_shell"]}, 4.0)
+	_build_enemy_frames("mouse", {"walk": ["mouse_walk_a", "mouse_walk_b"], "rest": ["mouse_rest"], "dead": ["mouse_rest"]}, 8.0)
+	_build_enemy_frames("frog", {"walk": ["frog_idle"], "jump": ["frog_jump"], "rest": ["frog_rest"], "dead": ["frog_rest"]}, 4.0)
+	_build_enemy_frames("bee", {"walk": ["bee_a", "bee_b"], "dead": ["bee_rest"]}, 12.0)
+	_build_enemy_frames("fly", {"walk": ["fly_a", "fly_b"], "dead": ["fly_rest"]}, 12.0)
+	_build_enemy_frames("saw", {"walk": ["saw_a", "saw_b"]}, 10.0)
 	quit()
 
 

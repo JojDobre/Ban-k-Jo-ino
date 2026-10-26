@@ -11,7 +11,7 @@ Hra je po slovensky: texty v UI, komentáre a docstringy píš **po slovensky**;
 ## Aktuálny stav
 
 - **Fáza 1 (pohyb)** – hotové: `Player` s coyote time, jump bufferom, premenlivou výškou skoku, animáciami (baník), squash/stretch, prachom, kamerou s pohľadom dopredu; multitouch ovládanie.
-- **Fáza 2 (prvý level)** – `level_01` hotový s grafikou: `TileMapLayer` (Kenney tráva + oblačné plošiny), parallax pozadie, mince, 3 hviezdy, zlatý poklad, checkpoint, pružina, sliz a slimák, cieľové dvere, zvuky, HUD s ikonami.
+- **Fáza 2 (prvý level)** – `level_01` hotový (216 dlaždíc): 9 druhov nepriateľov a nebezpečenstiev, bloky buchnuteľné zospodu, skryté bloky, kľúč a zámky, vypínač s modrými blokmi, pohyblivé a padajúce plošiny, láva, 2 tajné miesta za falošnými stenami, vylepšenia (štít, rýchlosť, magnet), hudba, gradient oblohy so slnkom, vietor v tráve.
 - **Fáza 3 (ekonomika, progres, ukladanie)** – autoloady hotové a pokryté testami; chýba mapa sveta a hlavné menu (boot ide priamo do `level_01`).
 - **Fáza 4 (dedina)** – iba dáta (`data/buildings/*.tres`) a výpočet `MineProduction`; scéna dediny neexistuje.
 
@@ -50,18 +50,18 @@ Grafika a niektoré resources sa generujú skriptmi – výsledky sú v repozit�
 
 | Skript | Vytvára | Kedy spustiť |
 |---|---|---|
-| `tools/prepare_assets.py <kenney> <speech-therapy-game-v2>` | `assets/` (orezaný baník, Kenney dlaždice, parallax vrstvy, zvuky) | pri zmene zdrojových obrázkov |
+| `tools/prepare_assets.py <kenney> <speech-therapy-game-v2> <kenney_extra>` | `assets/` (orezaný baník, Kenney dlaždice, parallax vrstvy, zvuky) | pri zmene zdrojových obrázkov |
 | `godot --headless --path . -s res://tools/build_resources.gd` | `assets/tilesets/terrain.tres`, `*_frames.tres` | po zmene obrázkov postáv/terénu |
 | `godot --headless --path . -s res://tools/build_level_01.gd` | `scenes/levels/level_01.tscn` z textovej mapy | po zmene mapy v skripte |
 
-**Level sa upravuje v textovej mape v `tools/build_level_01.gd`** (legenda je v hlavičke) a potom sa vygeneruje. Ak ho niekto upraví ručne v editore, generátor už nespúšťaj, inak zmeny prepíše. Po zmene mapy spusti `level_checks` a uprav ho, ak sa presunuli hviezdy/pružina.
+**Level sa upravuje v textovej mape v `tools/build_level_01.gd`** (legenda všetkých znakov je v hlavičke; druhá mapa `SECRET` určuje falošné steny) a potom sa vygeneruje. Generátor sám dopĺňa náhodné dekorácie na voľnú zem (pevné semienko, výsledok je stále rovnaký). Ak ho niekto upraví ručne v editore, generátor už nespúšťaj, inak zmeny prepíše. Po zmene mapy spusti `level_checks` a uprav ho, ak sa presunuli hviezdy/pružina.
 
 ## Architektúra
 
 ```
-autoload/      GameState, SaveManager, EconomyManager, ProgressionManager, Audio (poradie v project.godot je dôležité)
+autoload/      GameState, SaveManager, EconomyManager, ProgressionManager, Audio, Music (poradie v project.godot je dôležité)
 scripts/data/  PlayerProgress, LevelRun, MineProduction, LevelDefinition, BuildingDefinition
-scripts/       player/, enemies/, items/, levels/, ui/
+scripts/       player/, enemies/, items/, blocks/, hazards/, platforms/, effects/, levels/, ui/
 scenes/        zrkadlí scripts/
 data/          .tres definície levelov a budov (balans sa ladí tu, nie v kóde)
 tests/         headless testy, smoke test, level_checks, screenshoty
@@ -78,6 +78,10 @@ Pravidlá, ktoré treba dodržať:
 5. **UI iba zobrazuje.** Pripája sa na signály (`LevelRun.changed`, `EconomyManager.currency_changed`), nič nepočíta.
 6. **Hráč nevie o srdciach.** `Player` iba vyšle `damaged`; srdcia, checkpointy a koniec rieši `LevelController`.
 7. **Logopédia (budúcnosť)** sa pripojí iba cez `EconomyManager.grant_reward("speech_exercise", …)`.
+8. **Nepriatelia dedia z `Enemy`** (`scripts/enemies/enemy.gd`): ten rieši kontakt, skok zhora (`stompable`) a porazenie s efektom. Potomok dopĺňa iba `_move()` a `_animate()` (procedurálne „oživenie“ – Kenney nepriatelia majú len 2 snímky). Scéna potrebuje uzly `Sprite` (animácie `walk`, `dead`), `Hitbox`, `CollisionShape2D`.
+9. **Bloky reagujú na náraz hlavou** cez metódu `bump(player)` – volá ju `Player._bump_ceiling()` pre každý kolíziou zasiahnutý objekt nad hlavou. Nové interaktívne bloky stačí vybaviť touto metódou.
+10. **Efekty** (`Effects.burst/poof/sparkle/floating_text/debris`) sa pridávajú do uzla v skupine `level`, nie pod rušený objekt.
+11. **Vylepšenia** sú v `Player` (`add_powerup`, `has_powerup`); HUD ich iba zobrazuje cez signál `powerups_changed` a `get_powerups()`. Kľúče a tajné miesta počíta `LevelRun`.
 
 ### Pravidlá odmien (GDD kap. 2.4, 4.2)
 
@@ -92,7 +96,9 @@ Pravidlá, ktoré treba dodržať:
 | world | 1 (1) | `TileMapLayer` terénu, neviditeľné steny levelu |
 | player | 2 (2) | `Player` |
 | enemies | 3 (4) | `BasicEnemy` (scény `slime.tscn`, `snail.tscn`) |
-| pickups | 4 (8) | mince, hviezdy, poklad, checkpoint, pružina, cieľ |
+| pickups | 4 (8) | mince, predmety, checkpoint, pružina, cieľ |
+
+Pevné bloky, plošiny (`AnimatableBody2D`) a drvič sú vo vrstve world. Ostne, píla, láva, vypínač a tajné miesta sú `Area2D` bez vlastnej vrstvy (maska player).
 
 Mriežka levelu je **64 px**; bežná výška zeme je riadok 9 (y = 576). Oblačné plošiny (`=`) sú one-way.
 Fyzika hráča (plný skok ≈ 3 dlaždice, krátky ≈ 2,4, dĺžka skoku ≈ 4 dlaždice) určuje, aké medzery a výšky sú v leveli prekonateľné.
@@ -104,7 +110,9 @@ Hráč a nepriatelia sa fyzicky nezrážajú; kontakt rieši `Hitbox` (Area2D) n
 - Statické typovanie všade (`var x: int`, `-> void`, `:=`). Projekt hlási netypované deklarácie ako varovania.
 - Taby na odsadenie, `snake_case` pre funkcie a premenné, `PascalCase` pre `class_name`.
 - Ladiace parametre (rýchlosť, skok, ceny) sú `@export` alebo v `.tres`, nie natvrdo v logike.
-- Zvuky sa púšťajú iba cez `Audio.play(&"názov")`; nový zvuk pridaj do `Audio.SOUNDS`.
+- Zvuky sa púšťajú iba cez `Audio.play(&"názov")`; nový zvuk pridaj do `Audio.SOUNDS`. Hudba cez `Music.play(&"level")`.
+- V `-s` skriptoch (generátory v tools/) nepoužívaj `class_name` triedy, ktoré odkazujú na autoloady (napr. `BumpBlock`) – skript sa neskompiluje. Použi číselnú hodnotu s komentárom.
+- Po `respawn()` ostáva `is_on_floor()` do ďalšieho pohybu pôvodné – v testoch po premiestnení do vzduchu počkaj aspoň 7 snímok pred stlačením skoku (coyote time).
 - Area2D hlási prekrytie s oneskorením jednej snímky – pri kontrole „dopadol zhora“ používaj `Player.get_previous_feet_y()`.
 - Godot 4.4 generuje súbory `*.uid` – **commituj ich** spolu so skriptmi.
 - Nepoužívaj `TileMap` (zastaraný), ale `TileMapLayer`.

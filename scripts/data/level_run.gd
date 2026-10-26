@@ -11,6 +11,10 @@ var collected_items: Array[String] = []
 var max_hearts: int = 3
 var hearts: int = 3
 var checkpoint: Vector2 = Vector2.ZERO
+## Kľúče nájdené v tomto pokuse (otvárajú zamknuté bloky).
+var keys: int = 0
+## Počet objavených tajných miest v tomto pokuse.
+var secrets_found: int = 0
 
 
 func _init(p_level_id: String, p_max_hearts: int, start_position: Vector2) -> void:
@@ -38,6 +42,21 @@ func add_star(star_id: String) -> void:
 	if collect_item("star:" + star_id):
 		stars.append(star_id)
 		changed.emit()
+
+
+func heal() -> void:
+	hearts = mini(hearts + 1, max_hearts)
+	changed.emit()
+
+
+func add_key() -> void:
+	keys += 1
+	changed.emit()
+
+
+func add_secret() -> void:
+	secrets_found += 1
+	changed.emit()
 
 
 func lose_heart() -> void:

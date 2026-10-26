@@ -24,10 +24,13 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_time += delta
 	_sprite.scale.x = maxf(absf(cos(_time * SPIN_SPEED)), 0.12)
-	if _collected or _player == null or _player.magnet_radius <= 0.0:
+	if _collected or _player == null:
+		return
+	var radius := _player.get_magnet_radius()
+	if radius <= 0.0:
 		return
 	var target := _player.global_position
-	if global_position.distance_to(target) < _player.magnet_radius:
+	if global_position.distance_to(target) < radius:
 		global_position = global_position.move_toward(target, MAGNET_SPEED * delta)
 
 
@@ -37,6 +40,7 @@ func _on_body_entered(body: Node2D) -> void:
 	_collected = true
 	GameState.current_run.add_coins(value)
 	Audio.play(&"coin", 0.08)
+	Effects.sparkle(self, global_position)
 	set_deferred("monitoring", false)
 	var tween := create_tween()
 	tween.tween_property(self, "position:y", position.y - 40, 0.2).set_ease(Tween.EASE_OUT)

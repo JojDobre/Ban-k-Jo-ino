@@ -8,12 +8,12 @@ Farebná 2D plošinovka pre Android s budovaním dediny. Jožino skáče cez lev
 
 ## Stav
 
-Prvý level „Prvý krok“ je hrateľný s grafikou, animáciami a zvukmi. Pôvod grafiky je v [CREDITS.md](CREDITS.md).
+Prvý level „Prvý krok“ je hrateľný s grafikou, animáciami, hudbou a zvukmi. Pôvod grafiky je v [CREDITS.md](CREDITS.md).
 
 | Fáza | Stav |
 |---|---|
 | 1. Pohyb a fyzika | ✅ hotové, čaká na test na telefóne |
-| 2. Prvý level | ✅ grafika, animácie, zvuky, 3 hviezdy, poklad, pružina |
+| 2. Prvý level | ✅ veľký level s 9 druhmi nepriateľov, blokmi, tajnými miestami, vylepšeniami a hudbou |
 | 3. Ekonomika, progres, ukladanie | 🟡 logika + testy, chýba mapa a menu |
 | 4. Dedina | ⬜ iba dáta a výpočet bane |
 | 5. Dokončenie MVP | ⬜ |

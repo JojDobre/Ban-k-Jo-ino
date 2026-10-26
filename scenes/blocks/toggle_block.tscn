@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/blocks/toggle_block.gd" id="1_block"]
+[ext_resource type="Texture2D" path="res://assets/blocks/block_blue.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_block"]
+size = Vector2(64, 64)
+
+[node name="ToggleBlock" type="StaticBody2D"]
+collision_mask = 0
+script = ExtResource("1_block")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_block")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")

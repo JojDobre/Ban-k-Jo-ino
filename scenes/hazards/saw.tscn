@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/hazards/hazard.gd" id="1_hazard"]
+[ext_resource type="Texture2D" path="res://assets/enemies/saw_a.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_saw"]
+radius = 26.0
+
+[node name="Saw" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_hazard")
+move_range = Vector2(160, 0)
+spin_speed = 9.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_saw")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")

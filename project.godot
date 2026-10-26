@@ -16,6 +16,7 @@ SaveManager="*res://autoload/save_manager.gd"
 EconomyManager="*res://autoload/economy_manager.gd"
 ProgressionManager="*res://autoload/progression_manager.gd"
 Audio="*res://autoload/audio.gd"
+Music="*res://autoload/music.gd"
 
 [debug]
 

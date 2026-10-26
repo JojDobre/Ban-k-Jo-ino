@@ -2,10 +2,13 @@
 """Pripraví grafiku a zvuky pre hru zo zdrojových balíkov.
 
 Použitie:
-    python3 tools/prepare_assets.py <kenney_new_platformer_pack> <speech_therapy_game_v2>
+    python3 tools/prepare_assets.py <kenney_new_platformer_pack> <speech_therapy_game_v2> <kenney_extra>
 
 - kenney_new_platformer_pack: rozbalený „New Platformer Pack“ od Kenney (CC0), https://kenney.nl
 - speech_therapy_game_v2: klon https://github.com/JojDobre/Speech-Therapy-Game-v2 (baník, zvuky)
+- kenney_extra: priečinok s rozbalenými balíkmi Kenney „music-jingles“, „impact-sounds“, „interface-sounds“ (CC0)
+
+Hudba (assets/music/) sa do hry kopíruje ručne – pôvod je v CREDITS.md.
 
 Výstup ide do assets/. Výsledné súbory sú v repozitári, skript treba spustiť iba pri zmene zdrojov.
 """
@@ -41,17 +44,37 @@ TERRAIN_TILES = [
 CLOUD_TILES = ["cloud_left", "cloud_middle", "cloud_right"]
 
 TILE_SPRITES = {
-    "items": ["coin_gold", "star", "gem_yellow", "spring", "spring_out",
-              "flag_red_a", "flag_green_a", "flag_green_b", "door_open", "door_open_top"],
-    "props": ["bush", "grass", "mushroom_red", "mushroom_brown", "fence", "fence_broken",
+    "items": ["coin_gold", "star", "gem_yellow", "gem_blue", "gem_green", "gem_red", "heart", "key_yellow",
+              "spring", "spring_out", "flag_red_a", "flag_green_a", "flag_green_b", "door_open", "door_open_top"],
+    "blocks": ["block_coin_active", "block_strong_coin_active", "block_exclamation_active", "block_empty",
+               "block_strong_empty", "bricks_brown", "brick_brown", "lock_yellow", "block_blue",
+               "switch_blue", "switch_blue_pressed", "block_planks", "bridge_logs"],
+    "hazards": ["spikes", "lava", "lava_top"],
+    "props": ["bush", "grass", "grass_purple", "mushroom_red", "mushroom_brown", "fence", "fence_broken",
               "sign", "sign_right", "sign_exit", "rock", "hill", "hill_top"],
-    "ui": ["hud_heart", "hud_heart_empty", "hud_coin"],
+    "ui": ["hud_heart", "hud_heart_empty", "hud_coin", "hud_key_yellow"],
 }
 ENEMY_SPRITES = ["slime_normal_walk_a", "slime_normal_walk_b", "slime_normal_flat",
-                 "snail_walk_a", "snail_walk_b", "snail_shell"]
+                 "slime_spike_walk_a", "slime_spike_walk_b", "slime_spike_flat",
+                 "snail_walk_a", "snail_walk_b", "snail_shell",
+                 "mouse_walk_a", "mouse_walk_b", "mouse_rest",
+                 "frog_idle", "frog_jump", "frog_rest",
+                 "bee_a", "bee_b", "bee_rest", "fly_a", "fly_b", "fly_rest",
+                 "block_idle", "block_fall", "block_rest", "saw_a", "saw_b"]
 BACKGROUNDS = ["background_solid_sky", "background_color_hills", "background_clouds", "background_fade_trees"]
 KENNEY_SOUNDS = ["sfx_jump", "sfx_jump-high", "sfx_coin", "sfx_gem", "sfx_hurt", "sfx_bump", "sfx_disappear", "sfx_magic"]
 GAME_SOUNDS = {"effects/vyhra.mp3": "win.mp3", "effects/zlato.wav": "gold.wav"}
+# Ďalšie Kenney zvuky: (balík, cesta v priečinku Audio) -> názov v hre
+EXTRA_SOUNDS = {
+    ("music-jingles", "8-Bit jingles/jingles_NES12.ogg"): "secret.ogg",
+    ("music-jingles", "8-Bit jingles/jingles_NES09.ogg"): "powerup.ogg",
+    ("music-jingles", "8-Bit jingles/jingles_NES03.ogg"): "key.ogg",
+    ("impact-sounds", "impactPlank_medium_000.ogg"): "break.ogg",
+    ("impact-sounds", "impactPunch_heavy_000.ogg"): "slam.ogg",
+    ("impact-sounds", "impactGlass_light_001.ogg"): "shield_pop.ogg",
+    ("interface-sounds", "switch_002.ogg"): "switch.ogg",
+    ("interface-sounds", "question_001.ogg"): "alert.ogg",
+}
 
 
 def prepare_miner(source: Path) -> None:
@@ -155,9 +178,15 @@ def prepare_game_sounds(source: Path) -> None:
         shutil.copy(source / "zvuky" / src, ASSETS / "audio" / dst)
 
 
+def prepare_extra_sounds(extra: Path) -> None:
+    for (pack, path), dst in EXTRA_SOUNDS.items():
+        shutil.copy(extra / pack / "Audio" / path, ASSETS / "audio" / dst)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         sys.exit(__doc__)
     prepare_kenney(Path(sys.argv[1]))
     prepare_miner(Path(sys.argv[2]))
     prepare_game_sounds(Path(sys.argv[2]))
+    prepare_extra_sounds(Path(sys.argv[3]))

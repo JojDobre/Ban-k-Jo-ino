@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/charger_enemy.gd" id="1_enemy"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/mouse_frames.tres" id="2_frames"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(52, 36)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(56, 40)
+
+[sub_resource type="Gradient" id="Gradient_dust"]
+colors = PackedColorArray(0.95, 0.9, 0.8, 0.8, 0.95, 0.9, 0.8, 0)
+
+[node name="Mouse" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_enemy")
+speed = 60.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -14)
+sprite_frames = ExtResource("2_frames")
+animation = &"walk"
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="FloorRay" type="RayCast2D" parent="."]
+target_position = Vector2(0, 32)
+
+[node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(0, 18)
+emitting = false
+amount = 12
+lifetime = 0.35
+direction = Vector2(0, -1)
+spread = 60.0
+gravity = Vector2(0, 200)
+initial_velocity_min = 30.0
+initial_velocity_max = 90.0
+scale_amount_min = 4.0
+scale_amount_max = 8.0
+color_ramp = SubResource("Gradient_dust")

@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/hazards/crusher.gd" id="1_crusher"]
+[ext_resource type="Texture2D" path="res://assets/enemies/block_idle.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_danger"]
+size = Vector2(56, 16)
+
+[node name="Crusher" type="AnimatableBody2D"]
+collision_mask = 0
+script = ExtResource("1_crusher")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="Danger" type="Area2D" parent="."]
+position = Vector2(0, 36)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Danger"]
+shape = SubResource("RectangleShape2D_danger")

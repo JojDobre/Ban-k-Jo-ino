@@ -1,0 +1,18 @@
+[gd_resource type="SpriteFrames" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/enemies/saw_a.png" id="1_xpspj"]
+[ext_resource type="Texture2D" path="res://assets/enemies/saw_b.png" id="2_n5i6b"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_xpspj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_n5i6b")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+}]

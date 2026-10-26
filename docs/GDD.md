@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Verzia | 1.1 |
+| Verzia | 1.2 |
 | Stav | Schválený základný koncept, zapracované pripomienky z revízie |
 | Engine | Godot 4.4.x |
 | Jazyk | GDScript (statické typovanie) |
@@ -136,7 +136,21 @@ Pravidlá:
 - Pád do jamy uberie jedno srdce a vráti hráča na posledný checkpoint.
 - Po vyčerpaní všetkých sŕdc sa pokus ukončí neúspechom.
 
-MVP obsahuje jeden základný typ nepriateľa (chodí tam a späť, otáča sa pri stene a na okraji plošiny). Ďalšie typy sa budú pridávať až po overení základného systému kolízií.
+Druhy nepriateľov a nebezpečenstiev (od verzie 1.2):
+
+| Nepriateľ | Správanie | Skok zhora |
+|---|---|---|
+| Sliz | Chodí tam a späť, poskakuje | porazí ho |
+| Ostnatý sliz | Ako sliz, ale má ostne | zraní Jožina |
+| Slimák | Pomalý, kolíše sa | porazí ho |
+| Myš | Keď zbadá Jožina, poskočí („!“) a rozbehne sa | porazí ho |
+| Žaba | Skáče oblúkom smerom k Jožinovi, nevyskočí z plošiny | porazí ho |
+| Včela | Lieta tam a späť a vlní sa | porazí ho, vysoký odraz |
+| Mucha | Mizne a objavuje sa na druhom mieste; neviditeľná je neškodná | porazí ho, keď je viditeľná |
+| Drvič (nahnevaný blok) | Spadne, keď je Jožino pod ním, potom sa vráti | nedá sa; na vrchu sa dá stáť |
+| Píla, ostne, láva | Nebezpečenstvo; láva = ako pád do jamy | – |
+
+Nepriateľa stojaceho na bloku porazí aj úder do bloku zospodu.
 
 ### 2.4 Životy, checkpointy a neúspech
 
@@ -171,6 +185,22 @@ Neobmedzené zarábanie opakovaním je limitované tým, že mince v leveli sú 
 - V každom leveli sú tri, ukryté mimo hlavnej trasy.
 - Zobrazujú sa na mape sveta pri leveli (☆☆☆ → ★★★).
 - Všetky tri hviezdy v leveli = jednorazovo 1 zlato.
+
+**Predmety a vylepšenia v leveli** (platia iba počas pokusu):
+
+| Predmet | Účinok |
+|---|---|
+| Srdce | +1 srdce (pri plnom zdraví 5 mincí) |
+| Modrý kryštál | Štít – zachytí jeden zásah |
+| Zelený kryštál | Rýchlosť – 8 s rýchlejší beh a vyšší skok |
+| Červený kryštál | Magnet – 12 s priťahuje mince |
+| Kľúč | Otvorí zamknuté bloky (trezor so zlatom) |
+
+**Bloky:** blok s mincou, blok s viacerými mincami (8 úderov), blok s predmetom (srdce, kryštál), tehla (rozbije sa), skrytý blok (neviditeľný, objaví sa po údere zospodu), zámok, vypínač a modré bloky, ktoré prepína.
+
+**Plošiny:** oblak (priechodný zospodu), pohyblivá plošina (vodorovná, zvislá), padajúci mostík, pružina.
+
+**Tajné miesta:** falošné steny, ktoré vyzerajú ako zem, ale dá sa nimi prejsť (napr. podzemná miestnosť pod prepadávajúcou sa zemou). Počet nájdených sa ukáže vo výsledkoch.
 
 ---
 

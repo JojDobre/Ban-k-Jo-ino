@@ -21,6 +21,7 @@ var _finished := false
 
 
 func _enter_tree() -> void:
+	add_to_group(&"level")
 	# Pokus musí existovať skôr, ako sa spustí _ready() detí (hviezdy, truhlice).
 	run = LevelRun.new(level_definition.id, GameState.get_max_hearts(), ($Player as Node2D).position)
 	GameState.current_run = run
@@ -34,13 +35,15 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	player.magnet_radius = GameState.get_magnet_radius()
 	player.damaged.connect(_on_player_damaged)
+	player.fell_into_hazard.connect(_on_player_fell)
 	var camera := player.get_node("Camera2D") as Camera2D
 	camera.limit_bottom = int(camera_limit_bottom)
 	camera.limit_right = int(level_width)
 	for goal in get_tree().get_nodes_in_group("goal"):
 		(goal as Goal).reached.connect(_on_goal_reached)
-	hud.bind(run, level_definition)
+	hud.bind(run, level_definition, player, get_tree().get_nodes_in_group(&"secret_area").size())
 	hud.restart_requested.connect(_restart)
+	Music.play(&"level")
 
 
 func _physics_process(_delta: float) -> void:
@@ -55,6 +58,8 @@ func _on_player_damaged() -> void:
 
 
 func _on_player_fell() -> void:
+	if _finished:
+		return
 	run.lose_heart()
 	Audio.play(&"hurt")
 	if run.is_dead():
@@ -73,6 +78,8 @@ func _finish(success: bool) -> void:
 	if success:
 		player.celebrate()
 		Audio.play(&"win")
+		Music.duck(3.0)
+		Effects.burst(self, player.global_position + Vector2(0, -40), Color("ffe14d"), 30, 420.0, 1.0, 500.0)
 	else:
 		player.play_death()
 		Audio.play(&"fail")

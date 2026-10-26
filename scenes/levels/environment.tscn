@@ -1,0 +1,68 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/sun.gd" id="1_sun"]
+
+[sub_resource type="Gradient" id="Gradient_sky"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.3, 0.58, 0.93, 1, 0.55, 0.78, 0.98, 1, 0.765, 0.89, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sky"]
+gradient = SubResource("Gradient_sky")
+width = 8
+height = 256
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(1, 0.97, 0.8, 0.85, 1, 0.92, 0.6, 0.35, 1, 0.9, 0.55, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_core"]
+offsets = PackedFloat32Array(0, 0.82, 0.9, 1)
+colors = PackedColorArray(1, 0.98, 0.85, 1, 1, 0.9, 0.45, 1, 1, 0.88, 0.4, 0.6, 1, 0.88, 0.4, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_core"]
+gradient = SubResource("Gradient_core")
+width = 96
+height = 96
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_ray"]
+colors = PackedColorArray(1, 0.95, 0.75, 0.22, 1, 0.95, 0.75, 0)
+
+[node name="Environment" type="Node"]
+
+[node name="Sky" type="CanvasLayer" parent="."]
+layer = -20
+
+[node name="Gradient" type="TextureRect" parent="Sky"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_sky")
+expand_mode = 1
+
+[node name="Sun" type="Node2D" parent="Sky"]
+position = Vector2(1040, 120)
+script = ExtResource("1_sun")
+ray_gradient = SubResource("Gradient_ray")
+
+[node name="Glow" type="Sprite2D" parent="Sky/Sun"]
+scale = Vector2(1.6, 1.6)
+texture = SubResource("GradientTexture2D_glow")
+
+[node name="Core" type="Sprite2D" parent="Sky/Sun"]
+texture = SubResource("GradientTexture2D_core")
