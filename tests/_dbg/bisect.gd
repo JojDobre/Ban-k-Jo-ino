@@ -8,25 +8,21 @@ func _step(name: String) -> void:
 	for i in 3:
 		await get_tree().physics_frame
 
-func _run() -> void:
-	var root := Node3D.new(); add_child(root)
+func _plane(root: Node3D, name: String) -> void:
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(110, 80)
-	plane.material = VillageDecor._flat_material(Color.GREEN)
 	ground.mesh = plane
-	root.add_child(ground); await _step("plane")
-	var patch := MeshInstance3D.new()
-	var disc := CylinderMesh.new()
-	disc.top_radius = 2.0
-	disc.bottom_radius = 2.0
-	disc.height = 0.01
-	disc.radial_segments = 14
-	patch.mesh = disc
-	root.add_child(patch); await _step("patch")
-	patch.scale = Vector3(1.5, 1, 1); await _step("patch scale")
-	VillageDecor._rng.seed = 7
-	VillageDecor._ground(root); await _step("ground")
-	VillageDecor._paths(root); await _step("paths")
+	root.add_child(ground); await _step(name)
+	ground.queue_free(); await _step(name + " pryc")
+
+func _run() -> void:
+	var root := Node3D.new(); add_child(root)
+	VillageModels.smoke(root, Vector3.ZERO); await _step("smoke")
+	await _plane(root, "plane po dyme")
+	var light := OmniLight3D.new(); light.omni_range = 1.4; root.add_child(light); await _step("light")
+	await _plane(root, "plane po svetle")
+	VillageModels.fire(root, Vector3.ZERO); await _step("fire")
+	await _plane(root, "plane po ohni")
 	print("BISECT KONIEC")
 	get_tree().quit()
