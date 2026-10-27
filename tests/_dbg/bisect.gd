@@ -10,13 +10,23 @@ func _step(name: String) -> void:
 
 func _run() -> void:
 	var root := Node3D.new(); add_child(root)
-	var mat := StandardMaterial3D.new()
-	VillageDecor._disc(root, Vector3.ZERO, 0.8, mat); await _step("disc")
-	var strip := MeshInstance3D.new(); var box := BoxMesh.new(); box.size = Vector3(1.6, 0.02, 3.0); box.material = mat; strip.mesh = box; root.add_child(strip); await _step("box")
-	for k in 5:
-		VillageModels.add(root, "nature/rock_smallA", Vector3(k, 0, 0), 0.0, 1.0); await _step("rock %d" % k)
-	var big := MeshInstance3D.new(); var b2 := BoxMesh.new(); b2.size = Vector3(1.6, 0.02, 9.2); strip.mesh = b2; root.add_child(big); await _step("box2")
-	for path in VillageDecor.PATHS:
-		print(path)
+	var ground := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(110, 80)
+	plane.material = VillageDecor._flat_material(Color.GREEN)
+	ground.mesh = plane
+	root.add_child(ground); await _step("plane")
+	var patch := MeshInstance3D.new()
+	var disc := CylinderMesh.new()
+	disc.top_radius = 2.0
+	disc.bottom_radius = 2.0
+	disc.height = 0.01
+	disc.radial_segments = 14
+	patch.mesh = disc
+	root.add_child(patch); await _step("patch")
+	patch.scale = Vector3(1.5, 1, 1); await _step("patch scale")
+	VillageDecor._rng.seed = 7
+	VillageDecor._ground(root); await _step("ground")
+	VillageDecor._paths(root); await _step("paths")
 	print("BISECT KONIEC")
 	get_tree().quit()
