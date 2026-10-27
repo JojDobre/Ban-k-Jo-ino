@@ -22,8 +22,4 @@ jobs:
         run: ./godot --headless --path . --import
 
       - name: Bisect
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri > /dev/null
-          xvfb-run -a -s "-screen 0 1280x720x24" ./godot --path . --rendering-driver opengl3 --fixed-fps 60 res://tests/scene_smoke.tscn 2>&1 | grep -vE "ALSA|\(\?\?:0\)" | tail -30
-          xvfb-run -a -s "-screen 0 1280x720x24" ./godot --path . --rendering-driver opengl3 --fixed-fps 60 res://tests/village_input.tscn 2>&1 | grep -vE "ALSA|\(\?\?:0\)" | tail -30
-          ./godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn 2>&1 | grep -vE "ALSA|\(\?\?:0\)" | tail -30
+        run: ./godot --headless --path . --fixed-fps 60 res://tests/_dbg/bisect.tscn 2>&1 | grep -vE "ALSA|\(\?\?:0\)" | tail -60
