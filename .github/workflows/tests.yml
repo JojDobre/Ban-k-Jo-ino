@@ -22,4 +22,6 @@ jobs:
         run: ./godot --headless --path . --import
 
       - name: Bisect
-        run: ./godot --headless --path . --fixed-fps 60 res://tests/_dbg/bisect.tscn 2>&1 | grep -vE "ALSA|\(\?\?:0\)" | tail -60
+        run: |
+          ./godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn 2>&1 | grep -E "OBRAZOVKY|limit|SCRIPT"
+          ./godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn 2>&1 | grep -E "DEDINA|limit|SCRIPT|CHYBA"

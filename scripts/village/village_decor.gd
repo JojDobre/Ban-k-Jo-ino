@@ -8,8 +8,8 @@ const GRASS := Color("86c95a")
 const PATH := Color("dcb77c")
 const WATER := Color("5ec4e8")
 
-## Chodníky ako úsečky (x, z) – od námestia k budovám.
-const PATHS: Array[PackedVector2Array] = [
+## Chodníky ako lomené čiary (x, z) – od námestia k budovám.
+const PATH_POINTS := [
 	[Vector2(0, 1.6), Vector2(0, 5.0)],
 	[Vector2(0, 5.0), Vector2(-4.5, 3.0), Vector2(-7.5, 0.5)],
 	[Vector2(0, 5.0), Vector2(4.5, 3.5), Vector2(8.0, 0.0)],
@@ -24,6 +24,7 @@ const POND_POS := Vector3(12.5, 0, 5.0)
 const PLAZA_POS := Vector3(0, 0, 5.0)
 
 static var _rng := RandomNumberGenerator.new()
+static var _paths_cache: Array[PackedVector2Array] = []
 
 
 ## occupied = obdĺžniky (x, z), kde stoja budovy – dekorácie sa im vyhnú.
@@ -46,6 +47,15 @@ static func build(root: Node3D, occupied: Array[Rect2]) -> void:
 	# Mlyn sa točí stále dokola.
 	var tween := blades.create_tween().set_loops()
 	tween.tween_property(blades, "rotation:z", -TAU, 7.0).from(0.0)
+
+
+## Chodníky ako PackedVector2Array. Skladajú sa až za behu – konštanta typu
+## Array[PackedVector2Array] sa na niektorých strojoch načítala poškodená.
+static func paths() -> Array[PackedVector2Array]:
+	if _paths_cache.is_empty():
+		for points: Array in PATH_POINTS:
+			_paths_cache.append(PackedVector2Array(points))
+	return _paths_cache
 
 
 static func _flat_material(color: Color) -> StandardMaterial3D:
@@ -82,7 +92,7 @@ static func _ground(root: Node3D) -> void:
 
 static func _paths(root: Node3D) -> void:
 	var material := _flat_material(PATH)
-	for path in PATHS:
+	for path in paths():
 		for i in path.size():
 			var point := path[i]
 			_disc(root, Vector3(point.x, 0.012, point.y), 0.8, material)
@@ -99,8 +109,9 @@ static func _paths(root: Node3D) -> void:
 			strip.rotation.y = atan2(point.x - from.x, point.y - from.y)
 			root.add_child(strip)
 			# Kamienky pri okraji chodníka.
-			for j in int(length / 1.6):
-				var t := (j + 0.5) / int(length / 1.6)
+			var pebbles := clampi(int(length / 1.6), 0, 12)
+			for j in pebbles:
+				var t := (j + 0.5) / pebbles
 				var side := 1.0 if j % 2 == 0 else -1.0
 				var normal := Vector2(point.y - from.y, -(point.x - from.x)).normalized()
 				var spot := from.lerp(point, t) + normal * side * 1.0
@@ -279,7 +290,7 @@ static func _is_blocked(spot: Vector3, blocked: Array, margin: float) -> bool:
 
 static func _near_path(spot: Vector3, distance: float) -> bool:
 	var point := Vector2(spot.x, spot.z)
-	for path in PATHS:
+	for path in paths():
 		for i in range(1, path.size()):
 			var closest := Geometry2D.get_closest_point_to_segment(point, path[i - 1], path[i])
 			if closest.distance_to(point) < distance:
