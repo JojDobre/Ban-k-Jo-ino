@@ -13,7 +13,7 @@ Hra je po slovensky: texty v UI, komentáre a docstringy píš **po slovensky**;
 - **Fáza 1 (pohyb)** – hotové: `Player` s coyote time, jump bufferom, premenlivou výškou skoku, animáciami (baník), squash/stretch, prachom, kamerou s pohľadom dopredu; multitouch ovládanie.
 - **Fáza 2 (prvý level)** – `level_01` hotový (216 dlaždíc): 9 druhov nepriateľov a nebezpečenstiev, bloky buchnuteľné zospodu, skryté bloky, kľúč a zámky, vypínač s modrými blokmi, pohyblivé a padajúce plošiny, láva, 2 tajné miesta za falošnými stenami, vylepšenia (štít, rýchlosť, magnet), hudba, gradient oblohy so slnkom, vietor v tráve.
 - **Fáza 3 (ekonomika, progres, ukladanie)** – hotové: hlavné menu, mapa sveta Zelené údolie s 3 levelmi (`level_01`–`level_03`), nastavenia, uloženie verzie 2 (obleky, predmety, posledný level).
-- **Fáza 4 (dedina)** – hotové: dedina s domom, baňou (vozík, offline produkcia), kováčskou dielňou, panelom vylepšení a obyvateľmi; obchod s 5 oblekmi a 2 predmetmi na štart levelu.
+- **Fáza 4 (dedina)** – hotové: 3D dedina (farma v idle štýle, kamera s posunom a priblížením) s domom, baňou (vozík, offline produkcia), kováčskou dielňou, panelom vylepšení a obyvateľmi; obchod s 5 oblekmi a 2 predmetmi na štart levelu.
 
 Ďalší krok: test celého toku na telefóne, ladenie ekonomiky, ďalší svet (Staré bane).
 
@@ -42,6 +42,9 @@ godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn
 # Otvorí každú obrazovku (menu, mapa, dedina, obchod, nastavenia, levely) – výstup „OBRAZOVKY: OK“
 godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn
 
+# Ovládanie 3D dediny (ťuknutie na budovu a vozík, ťahanie, priblíženie) – výstup „DEDINA: OK“
+godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn
+
 # Screenshot ľubovoľnej obrazovky s ukážkovým postupom
 xvfb-run -a -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 1280x720 \
   res://tests/scene_shot.tscn -- /cesta/obrazok.png res://scenes/village/village.tscn 1.5
@@ -56,7 +59,7 @@ godot --path .
 
 Varovania „Odmietnutá záporná odmena“ a „Poškodené uloženie“ počas testov sú očakávané – testujú chybové vstupy.
 Hlásenia „ObjectDB instances leaked“ / „resources still in use at exit“ pri headless scénach sú tiež očakávané (tichý zvukový ovládač neuvoľní prehrávania).
-Po každej zmene logiky spusti testy; po zmene scén smoke test a level_checks. Pri vizuálnych zmenách sprav screenshoty a pozri si ich. GitHub Actions spúšťa testy, smoke test aj level_checks pri každom pushi.
+Po každej zmene logiky spusti testy; po zmene scén smoke test a level_checks, po zmene dediny aj village_input. Pri vizuálnych zmenách sprav screenshoty a pozri si ich. GitHub Actions spúšťa testy, smoke test aj level_checks pri každom pushi.
 
 ### Generátory (tools/)
 
@@ -80,7 +83,7 @@ scenes/        zrkadlí scripts/
 data/          .tres definície levelov a budov (balans sa ladí tu, nie v kóde)
 tests/         headless testy, smoke test, level_checks, screenshoty
 tools/         generátory assetov a levelu
-assets/        grafika a zvuky (pôvod v CREDITS.md)
+assets/        grafika a zvuky (pôvod v CREDITS.md); 3D diely dediny v assets/village3d/{town,survival,nature}
 ```
 
 Pravidlá, ktoré treba dodržať:
@@ -94,10 +97,11 @@ Pravidlá, ktoré treba dodržať:
 7. **Logopédia (budúcnosť)** sa pripojí iba cez `EconomyManager.grant_reward("speech_exercise", …)`.
 8. **Nepriatelia dedia z `Enemy`** (`scripts/enemies/enemy.gd`): ten rieši kontakt, skok zhora (`stompable`) a porazenie s efektom. Potomok dopĺňa iba `_move()` a `_animate()` (procedurálne „oživenie“ – Kenney nepriatelia majú len 2 snímky). Scéna potrebuje uzly `Sprite` (animácie `walk`, `dead`), `Hitbox`, `CollisionShape2D`.
 9. **Bloky reagujú na náraz hlavou** cez metódu `bump(player)` – volá ju `Player._bump_ceiling()` pre každý kolíziou zasiahnutý objekt nad hlavou. Nové interaktívne bloky stačí vybaviť touto metódou.
-10. **Efekty** (`Effects.burst/poof/sparkle/floating_text/debris`) sa pridávajú do uzla v skupine `level`, nie pod rušený objekt.
+10. **Efekty** (`Effects.burst/poof/sparkle/floating_text/debris`) sa pridávajú do uzla v skupine `level` (mimo levelu v skupine `effects`), nie pod rušený objekt.
 11. **Vylepšenia** sú v `Player` (`add_powerup`, `has_powerup`); HUD ich iba zobrazuje cez signál `powerups_changed` a `get_powerups()`. Kľúče a tajné miesta počíta `LevelRun`.
 12. **Dedina a obchod:** budovy, ich ceny a baňu rieši `VillageManager` (dom musí byť opravený, kým sa dá stavať ďalej; pred vylepšením bane sa vyplatí produkcia). Obleky a predmety `ShopManager`; predmety sa spotrebujú automaticky na začiatku levelu (`LevelController._use_shop_items`). Obrazovky iba volajú tieto funkcie.
-13. **UI téma** je v `assets/ui/theme.tres` (písmo Baloo 2, tlačidlá, panely). Varianty: `RoundButton` (okrúhle s ikonou), `DangerButton` (červené), `Card`, `TitleLabel`, `OutlinedLabel`. Nové UI farbi cez ne, nie cez vlastné štýly.
+13. **3D dedina** (`scenes/village/village.tscn`, Node3D + CanvasLayer s UI): modely budov skladá `VillageModels` z Kenney dielov podľa úrovne (bunka 1×1, stena leží na okraji +X, `BUILDING_SCALE` = 2), okolie `VillageDecor` (pevné semienko). `VillageBuilding` má štítok, šípku a `StaticBody3D` s metadátom `pick`; ťuknutie rieši lúč v `village.gd`. `VillageCamera` drží posun a priblíženie, `Villager` je 2D postavička otočená ku kamere. Nature Kit má pastelové farby – prefarbujú sa podľa názvu materiálu (`VillageModels.NATURE_COLORS`).
+14. **UI téma** je v `assets/ui/theme.tres` (písmo Baloo 2, tlačidlá, panely). Varianty: `RoundButton` (okrúhle s ikonou), `DangerButton` (červené), `Card`, `TitleLabel`, `OutlinedLabel`. Nové UI farbi cez ne, nie cez vlastné štýly.
 
 ### Pravidlá odmien (GDD kap. 2.4, 4.2)
 

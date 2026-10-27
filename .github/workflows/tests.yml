@@ -37,6 +37,12 @@ jobs:
           if grep -E "SCRIPT ERROR" scenes.log; then exit 1; fi
           grep -q "OBRAZOVKY: OK" scenes.log
 
+      - name: Ovládanie dediny (ťuknutie, ťahanie, priblíženie)
+        run: |
+          ./godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn 2>&1 | tee village.log
+          if grep -E "SCRIPT ERROR" village.log; then exit 1; fi
+          grep -q "DEDINA: OK" village.log
+
       - name: Dosiahnuteľnosť miest v leveloch
         run: |
           ./godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn 2>&1 | tee checks.log

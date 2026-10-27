@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Verzia | 1.3 |
+| Verzia | 1.4 |
 | Stav | Schválený základný koncept, zapracované pripomienky z revízie |
 | Engine | Godot 4.4.x |
 | Jazyk | GDScript (statické typovanie) |
@@ -327,12 +327,11 @@ Predmety sa použijú automaticky na začiatku ďalšieho levelu.
 
 ### 5.1 Vizuálna podoba
 
-Dedina používa rovnaký 2D bočný pohľad ako plošinovka – samostatná 2D scéna v rovnakom vizuálnom štýle, horizontálne posúvateľná.
+Dedina je **3D farma v štýle idle hier** (šikmý pohľad zhora, ako napr. Hay Day) – samostatná 3D scéna postavená z low-poly dielov. Hráč ju posúva ťahaním prsta a približuje dvoma prstami; ťuknutím na budovu otvorí jej panel. Plošinovka ostáva 2D.
 
 Obsahuje:
 
-- Pozadie s kopcami a oblohou.
-- Zem a cestičky.
+- Oblohu, trávnatú plochu, cestičky, námestie so studňou, pole s plodinami, veterný mlyn, jazierko a les dookola.
 - Budovy s viacerými vizuálnymi úrovňami.
 - Dekoračné prvky.
 - Označené miesta, na ktorých sa objavia nové stavby.
@@ -671,7 +670,7 @@ Výstup: tri levely s funkčným systémom odmien, progresu a trvalým ukladaní
 
 ### Fáza 4: Dedina
 
-- Bočný pohľad na dedinu.
+- 3D pohľad na dedinu (posun, priblíženie, ťuknutie na budovu).
 - Dom, baňa a kováčska dielňa s vizuálnymi úrovňami.
 - Panel vylepšenia budovy s kontrolou cien.
 - Pasívna produkcia, offline limit, vozík, ladiaci násobič času.

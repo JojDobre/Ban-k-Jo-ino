@@ -1,6 +1,6 @@
 # Jožino – Dobrodružstvo
 
-Farebná 2D plošinovka pre Android s budovaním dediny. Jožino skáče cez levely, zbiera mince, zlato a hviezdy a za ne buduje dedinu – baňu, ktorá zarába aj keď hra nebeží, a kováčsku dielňu, ktorá mu pomáha v ďalších leveloch.
+Farebná 2D plošinovka pre Android s budovaním 3D dediny. Jožino skáče cez levely, zbiera mince, zlato a hviezdy a za ne buduje dedinu – baňu, ktorá zarába aj keď hra nebeží, a kováčsku dielňu, ktorá mu pomáha v ďalších leveloch.
 
 - **Engine:** Godot 4.4 (GDScript), renderer Compatibility
 - **Platforma:** Android, na šírku
@@ -15,7 +15,7 @@ Hra má hlavné menu, mapu sveta Zelené údolie s tromi levelmi, dedinu s budov
 | 1. Pohyb a fyzika | ✅ hotové, čaká na test na telefóne |
 | 2. Prvý level | ✅ veľký level s 9 druhmi nepriateľov, blokmi, tajnými miestami, vylepšeniami a hudbou |
 | 3. Ekonomika, progres, ukladanie | ✅ menu, mapa sveta, 3 levely, nastavenia |
-| 4. Dedina | ✅ budovy, baňa s vozíkom, kováčska dielňa, obchod s oblekmi |
+| 4. Dedina | ✅ 3D farma: budovy, baňa s vozíkom, kováčska dielňa, obchod s oblekmi |
 | 5. Dokončenie MVP | ⬜ |
 
 ## Spustenie
@@ -66,6 +66,7 @@ godot --headless --path . -s res://tests/run_tests.gd
 godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn
 godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn
 godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn
+godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn
 ```
 
 ### Android

@@ -12,7 +12,9 @@
 | Písmo Baloo 2 | `assets/fonts/` | [Baloo 2](https://github.com/EkType/Baloo2) | SIL OFL 1.1 (`assets/fonts/OFL.txt`) |
 | Stromy a hrad na mape sveta | `assets/map/` | [Background Elements](https://kenney.nl/assets/background-elements) od Kenney | CC0 |
 | Ikony (koliesko, domček, košík, zámok, šípky…) | `assets/icons/` | [Game Icons](https://kenney.nl/assets/game-icons) od Kenney | CC0 |
-| Budovy dediny, vozík, hromada zlata | `assets/village/*.svg` | nakreslené pre tento projekt | vlastné |
+| 3D budovy, steny, strechy, mlyn, stánky, vozík, studňa | `assets/village3d/town/` | [Fantasy Town Kit](https://kenney.nl/assets/fantasy-town-kit) od Kenney | CC0 (`License.txt` v priečinku) |
+| 3D nákova, sudy, debny, náradie, skaly bane, lešenie | `assets/village3d/survival/` | [Survival Kit](https://kenney.nl/assets/survival-kit) od Kenney | CC0 (`License.txt` v priečinku) |
+| 3D stromy, plodiny, kvety, ploty, kamene | `assets/village3d/nature/` | [Nature Kit](https://kenney.nl/assets/nature-kit) od Kenney (farby upravené v kóde) | CC0 (`License.txt` v priečinku) |
 | Jožino a ďalšie obleky (5 variantov baníka), zvuky `win.mp3`, `gold.wav` | `assets/player/`, `assets/audio/` | [Speech-Therapy-Game-v2](https://github.com/JojDobre/Speech-Therapy-Game-v2) | **treba overiť** – pôvodný zdroj a licencia baníka nie sú známe |
 
 Pred zverejnením hry (Google Play) treba doplniť licenciu baníka a zvukov z druhého riadku.

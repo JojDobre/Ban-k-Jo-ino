@@ -2,6 +2,7 @@ class_name Effects
 extends RefCounted
 ## Krátke vizuálne efekty: obláčik, iskry, plávajúci text, úlomky.
 ## Pridávajú sa do aktuálneho levelu (skupina „level“), nie pod objekt, ktorý sa práve ruší.
+## Obrazovky bez levelu (3D dedina) môžu určiť vrstvu efektov skupinou „effects“.
 
 static var _soft_circle: GradientTexture2D
 
@@ -88,6 +89,8 @@ static func debris(context: Node, pos: Vector2, texture: Texture2D) -> void:
 static func _container(context: Node) -> Node:
 	var tree := context.get_tree()
 	var level := tree.get_first_node_in_group("level")
+	if level == null:
+		level = tree.get_first_node_in_group("effects")
 	return level if level != null else tree.current_scene
 
 
