@@ -18,11 +18,10 @@ func _plane(root: Node3D, name: String) -> void:
 
 func _run() -> void:
 	var root := Node3D.new(); add_child(root)
-	VillageModels.smoke(root, Vector3.ZERO); await _step("smoke")
-	await _plane(root, "plane po dyme")
-	var light := OmniLight3D.new(); light.omni_range = 1.4; root.add_child(light); await _step("light")
-	await _plane(root, "plane po svetle")
-	VillageModels.fire(root, Vector3.ZERO); await _step("fire")
-	await _plane(root, "plane po ohni")
+	for id in ["shop", "house", "mine", "blacksmith"]:
+		for level in 4:
+			add_child(VillageModels.build(id, level))
+			await _step("%s %d" % [id, level])
+			await _plane(root, "plane")
 	print("BISECT KONIEC")
 	get_tree().quit()
