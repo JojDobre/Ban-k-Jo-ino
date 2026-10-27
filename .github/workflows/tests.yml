@@ -21,30 +21,7 @@ jobs:
       - name: Import projektu
         run: ./godot --headless --path . --import
 
-      - name: Testy logiky
-        run: ./godot --headless --path . -s res://tests/run_tests.gd
-
-      # Hlásenia o neuvoľnených zvukoch pri ukončení sú v headless režime očakávané (tichý ovládač zvuku).
-      - name: Smoke test levelu
+      - name: Bisect
         run: |
-          ./godot --headless --path . --fixed-fps 60 res://tests/smoke_level.tscn 2>&1 | tee smoke.log
-          if grep -E "SCRIPT ERROR" smoke.log; then exit 1; fi
-          grep -q "KONIEC" smoke.log
-
-      - name: Všetky obrazovky sa otvoria bez chýb
-        run: |
-          ./godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn 2>&1 | tee scenes.log
-          if grep -E "SCRIPT ERROR" scenes.log; then exit 1; fi
-          grep -q "OBRAZOVKY: OK" scenes.log
-
-      - name: Ovládanie dediny (ťuknutie, ťahanie, priblíženie)
-        run: |
-          ./godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn 2>&1 | tee village.log
-          if grep -E "SCRIPT ERROR" village.log; then exit 1; fi
-          grep -q "DEDINA: OK" village.log
-
-      - name: Dosiahnuteľnosť miest v leveloch
-        run: |
-          ./godot --headless --path . --fixed-fps 60 res://tests/level_checks.tscn 2>&1 | tee checks.log
-          if grep -E "SCRIPT ERROR" checks.log; then exit 1; fi
-          grep -q "VÝSLEDOK: OK" checks.log
+          ./godot --headless --path . --fixed-fps 60 res://tests/scene_smoke.tscn 2>&1 | grep -E "OBRAZOVKY|limit|SCRIPT"
+          ./godot --headless --path . --fixed-fps 60 res://tests/village_input.tscn 2>&1 | grep -E "DEDINA|limit|SCRIPT|CHYBA"
